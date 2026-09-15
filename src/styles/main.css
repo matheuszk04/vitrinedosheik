@@ -226,7 +226,6 @@ h1, h2, h3, h4 { margin: 0; font-weight: 300; }
   width: 42px;
   height: 42px;
   padding: 0 9px;
-  margin-right: -9px;
 }
 .burger span {
   height: 1px;
@@ -256,11 +255,14 @@ h1, h2, h3, h4 { margin: 0; font-weight: 300; }
   background: var(--ink-2);
   border-left: 1px solid var(--line-warm);
   transform: translateX(100%);
-  transition: transform 0.38s var(--ease);
+  /* fechado sai da ordem de tabulação e da leitura de tela — sem isso o
+     teclado entra num menu invisível */
+  visibility: hidden;
+  transition: transform 0.38s var(--ease), visibility 0.38s;
   overflow-y: auto;
 }
 
-body.drawer-open .drawer { transform: none; }
+body.drawer-open .drawer { transform: none; visibility: visible; }
 body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
 
 .drawer-close {
@@ -320,6 +322,7 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
     left: 0; right: auto;
     width: var(--sidebar);
     transform: none;
+    visibility: visible;
     padding: 38px 26px;
     border-left: none;
     border-right: 1px solid var(--line);
@@ -341,7 +344,9 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
   .drawer .brand { display: none; }
 }
 
-.topbar-actions { display: flex; align-items: center; gap: 4px; }
+/* margem negativa no grupo, não no botão: alinha o desenho dos ícones com a
+   margem do texto sem empurrar o último para fora da tela */
+.topbar-actions { display: flex; align-items: center; gap: 4px; margin-right: -9px; }
 
 .icon-btn {
   display: grid;
