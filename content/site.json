@@ -4,18 +4,14 @@
     "tagline": "Sua Essência. Sua presença.",
     "description": "Curadoria de perfumaria árabe. Fragrâncias escolhidas uma a uma, apresentadas por inteiro, entregues com atendimento individual."
   },
-
   "whatsapp": {
     "number": "5534999482146",
     "greeting": "Olá! Cheguei pelo site da Vitrine do Sheik e queria conversar sobre as fragrâncias."
   },
-
   "url": "https://matheuszk04.github.io/vitrinedosheik",
   "base": "",
-
   "//noindex": "true enquanto o conteúdo é rascunho: o site fica no ar mas fora do Google. Troque para false quando estiver pronto para ser encontrado.",
   "noindex": true,
-
   "home": {
     "entrance": {
       "line": "Algumas fragrâncias entram em uma sala. Outras permanecem nela.",
@@ -36,7 +32,6 @@
       "cta": "Falar com um consultor"
     }
   },
-
   "consultant": {
     "eyebrow": "Em breve",
     "title": "Consultor Olfativo",
@@ -44,37 +39,115 @@
     "note": "Enquanto isso, essa conversa acontece com uma pessoa de verdade.",
     "cta": "Falar com um consultor agora"
   },
-
   "olfactiveMap": {
     "axes": {
-      "x": { "min": "Fresco", "max": "Intenso" },
-      "y": { "min": "Seco · Amadeirado", "max": "Doce · Gourmand" }
+      "x": {
+        "min": "Fresco",
+        "max": "Intenso"
+      },
+      "y": {
+        "min": "Seco · Amadeirado",
+        "max": "Doce · Gourmand"
+      }
     },
     "regions": [
-      { "id": "citrico",     "label": "Cítrico",     "x": 0.16, "y": 0.28, "note": "Abertura clara e viva. Evapora rápido, refresca primeiro." },
-      { "id": "floral",      "label": "Floral",      "x": 0.30, "y": 0.66, "note": "O centro de muitas fragrâncias. Define caráter sem peso." },
-      { "id": "frutado",     "label": "Frutado",     "x": 0.26, "y": 0.86, "note": "Doçura leve e luminosa, quase sempre no topo." },
-      { "id": "amadeirado",  "label": "Amadeirado",  "x": 0.68, "y": 0.20, "note": "Estrutura seca. É o que segura a fragrância no lugar." },
-      { "id": "especiado",   "label": "Especiado",   "x": 0.72, "y": 0.50, "note": "Calor e atrito. Canela, pimenta, açafrão." },
-      { "id": "gourmand",    "label": "Gourmand",    "x": 0.80, "y": 0.88, "note": "Comestível e envolvente. Baunilha, pralinê, tâmara." },
-      { "id": "oriental",    "label": "Oriental · Âmbar", "x": 0.90, "y": 0.28, "note": "Resina e âmbar. A assinatura da perfumaria árabe." }
+      {
+        "id": "citrico",
+        "label": "Cítrico",
+        "x": 0.16,
+        "y": 0.28,
+        "note": "Abertura clara e viva. Evapora rápido, refresca primeiro."
+      },
+      {
+        "id": "floral",
+        "label": "Floral",
+        "x": 0.3,
+        "y": 0.66,
+        "note": "O centro de muitas fragrâncias. Define caráter sem peso."
+      },
+      {
+        "id": "frutado",
+        "label": "Frutado",
+        "x": 0.26,
+        "y": 0.86,
+        "note": "Doçura leve e luminosa, quase sempre no topo."
+      },
+      {
+        "id": "amadeirado",
+        "label": "Amadeirado",
+        "x": 0.68,
+        "y": 0.2,
+        "note": "Estrutura seca. É o que segura a fragrância no lugar."
+      },
+      {
+        "id": "especiado",
+        "label": "Especiado",
+        "x": 0.72,
+        "y": 0.5,
+        "note": "Calor e atrito. Canela, pimenta, açafrão."
+      },
+      {
+        "id": "gourmand",
+        "label": "Gourmand",
+        "x": 0.8,
+        "y": 0.88,
+        "note": "Comestível e envolvente. Baunilha, pralinê, tâmara."
+      },
+      {
+        "id": "oriental",
+        "label": "Oriental · Âmbar",
+        "x": 0.9,
+        "y": 0.28,
+        "note": "Resina e âmbar. A assinatura da perfumaria árabe."
+      }
     ]
   },
-
   "pyramidExplainer": {
     "title": "Como uma fragrância evolui",
     "body": "Um perfume não é um cheiro só. Ele acontece em camadas, e cada camada aparece em um tempo diferente.",
     "stages": [
-      { "id": "topo",    "label": "Topo",    "time": "Primeiros minutos", "body": "O que você sente ao borrifar. As moléculas mais leves — evaporam rápido e servem de apresentação." },
-      { "id": "coracao", "label": "Coração", "time": "30 min a 2 h",      "body": "A identidade real da fragrância. É isso que as pessoas associam a você." },
-      { "id": "fundo",   "label": "Fundo",   "time": "2 h em diante",     "body": "O que fica no tecido e na memória. A estrutura mais pesada e mais persistente." }
+      {
+        "id": "topo",
+        "label": "Topo",
+        "time": "Primeiros minutos",
+        "body": "O que você sente ao borrifar. As moléculas mais leves — evaporam rápido e servem de apresentação."
+      },
+      {
+        "id": "coracao",
+        "label": "Coração",
+        "time": "30 min a 2 h",
+        "body": "A identidade real da fragrância. É isso que as pessoas associam a você."
+      },
+      {
+        "id": "fundo",
+        "label": "Fundo",
+        "time": "2 h em diante",
+        "body": "O que fica no tecido e na memória. A estrutura mais pesada e mais persistente."
+      }
     ]
   },
-
   "usageDefaults": [
     "2 a 4 borrifadas em pontos de pulsação: pescoço, atrás das orelhas, pulsos.",
     "Não esfregue os pulsos depois de aplicar — o atrito quebra as notas de topo.",
     "Pele hidratada segura mais a fragrância. Aplique logo após o banho.",
     "Uma borrifada na roupa prolonga o rastro, mas teste antes em tecidos claros."
-  ]
+  ],
+  "glossary": {
+    "projecao": {
+      "label": "Projeção",
+      "body": "O quanto a fragrância é percebida por quem está ao seu redor, e não só por você."
+    },
+    "fixacao": {
+      "label": "Fixação",
+      "body": "Quanto tempo a fragrância continua perceptível na pele depois de aplicada."
+    },
+    "familia": {
+      "label": "Família olfativa",
+      "body": "O estilo aromático predominante — amadeirado, floral, gourmand, oriental."
+    },
+    "piramide": {
+      "label": "Pirâmide olfativa",
+      "body": "Um perfume acontece em camadas. Cada uma aparece num momento diferente das horas seguintes."
+    }
+  }
 }

@@ -1,4 +1,5 @@
-import { u, esc, money, picture, waHref, layout, card, accords, meters, timeline, WHATS_ICON } from "./base.mjs";
+import { u, abs, esc, money, picture, waHref, layout, card, accords, meters, timeline,
+         list, isEnriched, inStock, term, WHATS_ICON } from "./base.mjs";
 
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -9,19 +10,21 @@ function whenChips(perfume) {
     const key = label.toLowerCase();
     if (!seen.has(key)) seen.set(key, label);
   };
-  perfume.occasions.forEach((o) => add(cap(o)));
-  perfume.moments.forEach((m) => add(cap(m)));
-  perfume.climates.forEach((c) => add(`Clima ${c}`));
+  list(perfume.occasions).forEach((o) => add(cap(o)));
+  list(perfume.moments).forEach((m) => add(cap(m)));
+  list(perfume.climates).forEach((c) => add(`Clima ${c}`));
   return [...seen.values()];
 }
 
-const btnWhats = (href, label, source) =>
+const btnWhats = (href, label, source, perfume = "") =>
   `<a class="btn btn--gold" href="${href}" target="_blank" rel="noopener"
-      data-track="whatsapp_click" data-track-source="${source}">${WHATS_ICON}${esc(label)}</a>`;
+      data-track="whatsapp_click" data-track-source="${source}"${perfume ? ` data-track-perfume="${esc(perfume)}"` : ""}>${WHATS_ICON}${esc(label)}</a>`;
 
 /* ------------------------------------------------------------------ HOME */
 export function home(site, perfumes) {
   const { entrance, universe, closing } = site.home;
+  // a home mostra só o que está pronto para ser lido por inteiro
+  const featured = perfumes.filter(isEnriched).slice(0, 3);
   const stages = site.pyramidExplainer.stages;
 
   const body = `
@@ -48,11 +51,11 @@ export function home(site, perfumes) {
       <div class="section-head reveal">
         <div>
           <span class="eyebrow">A curadoria</span>
-          <h2 class="display">${perfumes.length} fragrâncias, explicadas por inteiro</h2>
+          <h2 class="display">${featured.length} fragrâncias, explicadas por inteiro</h2>
         </div>
-        <a class="btn btn--quiet" href="${u('/fragrancias/')}">Ver todas</a>
+        <a class="btn btn--quiet" href="${u('/fragrancias/')}">Ver as ${perfumes.length}</a>
       </div>
-      <div class="grid">${perfumes.map((p, i) => card(p, { eager: i === 0 })).join("")}</div>
+      <div class="grid">${featured.map((p, i) => card(p, { eager: i === 0 })).join("")}</div>
     </div>
   </section>
 
@@ -116,11 +119,11 @@ export function home(site, perfumes) {
 
 /* ------------------------------------------------------------- EXPLORADOR */
 const FILTER_GROUPS = [
-  { key: "gender", legend: "Gênero", from: (p) => [p.gender] },
-  { key: "families", legend: "Família", from: (p) => p.families },
-  { key: "occasions", legend: "Ocasião", from: (p) => p.occasions },
-  { key: "personality", legend: "Perfil", from: (p) => p.personality },
-  { key: "climates", legend: "Clima", from: (p) => p.climates },
+  { key: "gender", legend: "Gênero", from: (p) => (p.gender ? [p.gender] : []) },
+  { key: "families", legend: "Família", from: (p) => list(p.families) },
+  { key: "occasions", legend: "Ocasião", from: (p) => list(p.occasions) },
+  { key: "personality", legend: "Perfil", from: (p) => list(p.personality) },
+  { key: "climates", legend: "Clima", from: (p) => list(p.climates) },
 ];
 
 export function explorer(site, perfumes) {
@@ -171,131 +174,176 @@ export function explorer(site, perfumes) {
 
 /* -------------------------------------------------------------- FRAGRÂNCIA */
 export function perfumePage(site, perfume, all) {
-  const msg = `Olá! Vi o ${perfume.name} no site da Vitrine do Sheik e queria conhecer melhor.`;
-  const [main, ...rest] = perfume.images;
+  const enriched = isEnriched(perfume);
+  const msg = enriched
+    ? `Olá! Estava conhecendo o ${perfume.name} no site e gostaria de saber mais sobre ele.`
+    : `Olá! Vi o ${perfume.name} no site e gostaria de saber mais sobre essa fragrância.`;
+
+  const images = list(perfume.images);
+  const main = images[0];
+  const families = list(perfume.families);
+  const traits = list(perfume.personality);
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: `${perfume.name} — ${perfume.brand}`,
-    brand: { "@type": "Brand", name: perfume.brand },
-    description: perfume.story,
-    image: site.url ? `${site.url.replace(/\/$/, "")}/img/perfumes/${main.base}-960.jpg` : `/img/perfumes/${main.base}-960.jpg`,
-    offers: {
-      "@type": "Offer",
-      price: perfume.price.toFixed(2),
-      priceCurrency: "BRL",
-      availability: "https://schema.org/InStock",
-    },
+    name: perfume.brand ? `${perfume.name} — ${perfume.brand}` : perfume.name,
+    ...(perfume.brand ? { brand: { "@type": "Brand", name: perfume.brand } } : {}),
+    ...(perfume.story ? { description: perfume.story } : {}),
+    ...(main ? { image: abs(site, `/img/perfumes/${main.base}-960.jpg`) } : {}),
+    ...(perfume.price != null
+      ? {
+          offers: {
+            "@type": "Offer",
+            price: perfume.price.toFixed(2),
+            priceCurrency: "BRL",
+            availability: inStock(perfume)
+              ? "https://schema.org/InStock"
+              : "https://schema.org/BackOrder",
+          },
+        }
+      : {}),
   };
+
+  /* --------- galeria (ou moldura vazia, nunca a foto de outro perfume) */
+  const gallery = main
+    ? `<div class="gallery-main" data-gallery-main>
+        ${picture({ dir: "/img/perfumes", base: main.base, alt: main.alt, sizes: "(min-width:900px) 480px, 94vw", eager: true })}
+      </div>
+      ${images.length > 1 ? `<div class="gallery-thumbs" role="group" aria-label="Fotos">
+        ${images.map((img, i) => `<button class="gallery-thumb${i === 0 ? " is-active" : ""}" data-thumb="${i}" aria-label="Foto ${i + 1}">
+          <img src="${u(`/img/perfumes/${img.base}-320.webp`)}" alt="" width="320" height="427" loading="lazy" decoding="async">
+        </button>`).join("")}
+      </div>` : ""}`
+    : `<div class="gallery-main gallery-main--empty"><span class="mark">${esc(perfume.name.trim()[0] || "·")}</span></div>`;
+
+  /* --------- decisão rápida: o que o cliente precisa em 10 segundos */
+  const quickFacts = [
+    families.length && ["Família", families.join(" · ")],
+    list(perfume.occasions).length && ["Ocasião", list(perfume.occasions).join(" · ")],
+    perfume.volumeMl && ["Volume", `${perfume.volumeMl} ml`],
+    perfume.concentration && ["Concentração", perfume.concentration],
+  ].filter(Boolean);
+
+  const decision = `
+    ${traits.length ? `<div class="personality">${traits.map((t) => `<span class="chip chip--solid">${esc(t)}</span>`).join("")}</div>` : ""}
+    ${perfume.recommendedFor ? `<p class="quick-for"><b>Para quem é.</b> ${esc(perfume.recommendedFor)}</p>` : ""}
+    ${quickFacts.length ? `<dl class="quick-facts">${quickFacts
+      .map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`)
+      .join("")}</dl>` : ""}
+    ${perfume.profile ? `<div class="block"><h2 class="block-title">Perfil ${term("projecao")}</h2>${meters(perfume.profile)}</div>` : ""}`;
+
+  /* --------- caixa de conversão, agora acima da dobra longa */
+  const convert = `<div class="convert">
+    ${perfume.price != null
+      ? `<div class="convert-price">${money(perfume.price)}<em>no pix</em></div>
+         ${perfume.priceCard ? `<div class="convert-alt">ou ${money(perfume.priceCard)} no cartão</div>` : ""}`
+      : `<div class="convert-price">Sob consulta</div>`}
+    <div class="convert-meta">${[perfume.brand, perfume.volumeMl ? `${perfume.volumeMl} ml` : null, inStock(perfume) ? null : "Sob encomenda"]
+      .filter(Boolean).map(esc).join(" · ")}</div>
+    ${btnWhats(waHref(site, msg), enriched ? `Quero conhecer o ${perfume.name}` : `Perguntar sobre o ${perfume.name}`, "perfume_page", perfume.slug)}
+    <p class="convert-note">${enriched
+      ? "Atendimento individual com um consultor.<br>Sem carrinho, sem cadastro."
+      : "Ainda não publicamos a ficha completa desta fragrância.<br>O consultor conta tudo sobre ela por mensagem."}</p>
+  </div>`;
+
+  /* --------- camadas para quem quer profundidade */
+  const experience = [
+    perfume.atmosphere && `<div class="block"><h2 class="block-title">Atmosfera</h2><p class="atmosphere">${esc(perfume.atmosphere)}</p></div>`,
+    perfume.story && `<div class="block"><h2 class="block-title">A experiência</h2><p class="lede">${esc(perfume.story)}</p></div>`,
+    perfume.notes && perfume.perception &&
+      `<div class="block"><h2 class="block-title">Como ele evolui ${term("piramide")}</h2>${timeline(perfume, site.pyramidExplainer.stages)}</div>`,
+    list(perfume.accords).length &&
+      `<div class="block"><h2 class="block-title">Composição ${term("familia")}</h2>${accords(perfume.accords)}</div>`,
+    whenChips(perfume).length &&
+      `<div class="block"><h2 class="block-title">Quando usar</h2><div class="personality">${whenChips(perfume)
+        .map((t) => `<span class="chip">${esc(t)}</span>`).join("")}</div></div>`,
+    `<div class="block"><h2 class="block-title">Como usar</h2><ul class="usage">${site.usageDefaults
+      .map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`,
+    (perfume.recommendedFor || perfume.notFor) && `<div class="verdict">
+      ${perfume.recommendedFor ? `<div class="verdict-box"><h3>Você vai gostar se</h3><p>${esc(perfume.recommendedFor)}</p></div>` : ""}
+      ${perfume.notFor ? `<div class="verdict-box verdict-box--warn"><h3>Talvez não seja para você</h3><p>${esc(perfume.notFor)}</p></div>` : ""}
+    </div>`,
+  ].filter(Boolean).join("");
+
+  const related = relatedTo(perfume, all);
 
   const body = `
   <div class="wrap">
     <a class="back" href="${u('/fragrancias/')}">&larr; Todas as fragrâncias</a>
 
     <article class="fragrance">
-      <div class="fragrance-gallery">
-        <div class="gallery-main" data-gallery-main>
-          ${picture({ dir: "/img/perfumes", base: main.base, alt: main.alt, sizes: "(min-width:900px) 480px, 94vw", eager: true })}
-        </div>
-        ${rest.length ? `<div class="gallery-thumbs" role="group" aria-label="Fotos">
-          ${perfume.images.map((img, i) => `<button class="gallery-thumb${i === 0 ? " is-active" : ""}" data-thumb="${i}" aria-label="Foto ${i + 1}">
-            <img src="${u(`/img/perfumes/${img.base}-320.webp`)}" alt="" width="320" height="427" loading="lazy" decoding="async">
-          </button>`).join("")}
-        </div>` : ""}
-      </div>
+      <div class="fragrance-gallery">${gallery}</div>
 
       <div class="fragrance-info">
-        <span class="eyebrow">${esc(perfume.families.join(" · "))}</span>
+        ${families.length ? `<span class="eyebrow">${esc(families.join(" · "))}</span>` : ""}
         <h1 class="display fragrance-name">${esc(perfume.name)}</h1>
-        <div class="fragrance-brand">${esc(perfume.brand)}</div>
-        <p class="fragrance-tagline">${esc(perfume.tagline)}</p>
-
-        <div class="personality">
-          ${perfume.personality.map((t) => `<span class="chip chip--solid">${esc(t)}</span>`).join("")}
-        </div>
-
-        <div class="block">
-          <h2 class="block-title">Perfil</h2>
-          ${meters(perfume.profile)}
-        </div>
-
-        <div class="block">
-          <h2 class="block-title">Composição</h2>
-          ${accords(perfume.accords)}
-        </div>
-
-        <div class="block">
-          <h2 class="block-title">Atmosfera</h2>
-          <p class="atmosphere">${esc(perfume.atmosphere)}</p>
-        </div>
-
-        <div class="block">
-          <h2 class="block-title">A experiência</h2>
-          <p class="lede">${esc(perfume.story)}</p>
-        </div>
-
-        <div class="block">
-          <h2 class="block-title">Como ele evolui</h2>
-          ${timeline(perfume, site.pyramidExplainer.stages)}
-        </div>
-
-        <div class="block">
-          <h2 class="block-title">Quando usar</h2>
-          <div class="personality">
-            ${whenChips(perfume).map((t) => `<span class="chip">${esc(t)}</span>`).join("")}
-          </div>
-        </div>
-
-        <div class="block">
-          <h2 class="block-title">Como usar</h2>
-          <ul class="usage">${site.usageDefaults.map((u) => `<li>${esc(u)}</li>`).join("")}</ul>
-        </div>
-
-        <div class="verdict">
-          <div class="verdict-box">
-            <h3>Para quem é</h3>
-            <p>${esc(perfume.recommendedFor)}</p>
-          </div>
-          <div class="verdict-box verdict-box--warn">
-            <h3>Não é para você se</h3>
-            <p>${esc(perfume.notFor)}</p>
-          </div>
-        </div>
-
-        <div class="convert">
-          <div class="convert-price">${money(perfume.price)}</div>
-          <div class="convert-meta">${perfume.volumeMl ? `${perfume.volumeMl} ml · ` : ""}${esc(perfume.brand)}</div>
-          ${btnWhats(waHref(site, msg), `Quero conhecer o ${perfume.name}`, "perfume_page")}
-          <p class="convert-note">Atendimento individual com um consultor.<br>Sem carrinho, sem cadastro.</p>
-        </div>
+        ${perfume.brand ? `<div class="fragrance-brand">${esc(perfume.brand)}</div>` : ""}
+        ${perfume.tagline ? `<p class="fragrance-tagline">${esc(perfume.tagline)}</p>` : ""}
+        ${decision}
+        ${convert}
+        ${experience}
       </div>
     </article>
   </div>
 
-  ${all.length > 1 ? `<section class="section">
+  ${related.length ? `<section class="section">
     <div class="wrap">
       <div class="section-head reveal">
-        <div><span class="eyebrow">Continue</span><h2 class="display">Outras fragrâncias</h2></div>
+        <div><span class="eyebrow">Se você gostou deste</span><h2 class="display">Fragrâncias próximas</h2></div>
       </div>
-      <div class="grid">${all.filter((p) => p.slug !== perfume.slug).map((p) => card(p)).join("")}</div>
+      <div class="grid">${related.map((p) => card(p)).join("")}</div>
     </div>
-  </section>` : ""}`;
+  </section>` : ""}
+
+  <section class="closing">
+    <div class="wrap">
+      <span class="eyebrow eyebrow--center reveal">Ainda em dúvida?</span>
+      <h2 class="display reveal">Comparar duas fragrâncias leva cinco minutos.</h2>
+      <p class="reveal">Nosso consultor conhece cada uma delas na pele — e diz com franqueza qual combina mais com você.</p>
+      <div class="reveal">${btnWhats(waHref(site, msg), "Falar com um consultor", "perfume_closing", perfume.slug)}</div>
+    </div>
+  </section>`;
 
   return layout({
     site,
     path: `/perfumes/${perfume.slug}/`,
-    title: `${perfume.name} — ${perfume.brand} | Vitrine do Sheik`,
-    description: `${perfume.tagline} ${perfume.story}`.slice(0, 155),
-    ogImage: `/img/perfumes/${main.base}-960.jpg`,
+    title: `${perfume.name}${perfume.brand ? ` — ${perfume.brand}` : ""} | Vitrine do Sheik`,
+    description: perfume.tagline
+      ? `${perfume.tagline} ${perfume.story || ""}`.trim().slice(0, 155)
+      : `${perfume.name} na Vitrine do Sheik. Atendimento individual com um consultor de perfumaria árabe.`,
+    ogImage: main ? `/img/perfumes/${main.base}-960.jpg` : null,
     jsonLd,
     body,
   });
 }
 
+/** Relacionados por afinidade real: família, depois ocasião, depois gênero. */
+function relatedTo(perfume, all) {
+  const fams = new Set(list(perfume.families));
+  const occs = new Set(list(perfume.occasions));
+
+  const scored = all
+    .filter((p) => p.slug !== perfume.slug)
+    .map((p) => {
+      let score = 0;
+      list(p.families).forEach((f) => { if (fams.has(f)) score += 3; });
+      list(p.occasions).forEach((o) => { if (occs.has(o)) score += 2; });
+      if (p.gender && p.gender === perfume.gender) score += 1;
+      if (isEnriched(p)) score += 1;
+      return { p, score };
+    })
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  return scored.slice(0, 3).map((x) => x.p);
+}
+
 /* ------------------------------------------------------------ MAPA OLFATIVO */
-export function mapPage(site, perfumes) {
+export function mapPage(site, allPerfumes) {
   const { axes, regions } = site.olfactiveMap;
+  // só entra no mapa quem já tem coordenada olfativa real
+  const perfumes = allPerfumes.filter((p) => p.map);
 
   // projeta 0..1 numa faixa interna, para que rótulo nenhum encoste na borda
   const px = (v) => (8 + v * 84).toFixed(1) + "%";

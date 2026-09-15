@@ -36,6 +36,23 @@ export const logoImg = (cls = "", eager = false) => {
   </picture>`;
 };
 
+/** URL absoluta — necessária em Open Graph e dados estruturados. */
+export const abs = (site, path) =>
+  site.url ? site.url.replace(/\/$/, "") + path : u(path);
+
+/* Glossário: o site ensina enquanto o cliente navega, sem aula de química. */
+let GLOSSARY = {};
+export const setGlossary = (g) => { GLOSSARY = g || {}; };
+
+export function term(id) {
+  const t = GLOSSARY[id];
+  if (!t) return "";
+  return `<button class="term" type="button" data-term aria-expanded="false" aria-label="O que significa ${esc(t.label)}?">
+    <span aria-hidden="true">?</span>
+    <span class="term-pop" role="tooltip"><b>${esc(t.label)}</b>${esc(t.body)}</span>
+  </button>`;
+}
+
 export const waHref = (site, message) =>
   `https://wa.me/${site.whatsapp.number}?text=${encodeURIComponent(message)}`;
 
@@ -110,31 +127,60 @@ export function timeline(perfume, stages) {
   </div>`;
 }
 
+/* O catálogo cresce por etapas: nome primeiro, dados olfativos depois.
+   Tudo daqui para baixo precisa funcionar com perfil parcial. */
+export const list = (v) => (Array.isArray(v) ? v : []);
+
+/** Um perfume só participa de recomendação quando tem com o que ser comparado. */
+export const isEnriched = (p) =>
+  list(p.families).length > 0 && list(p.personality).length > 0 && !!p.profile;
+
+export const inStock = (p) => p.units == null || p.units > 0;
+
+/** Sem foto, a moldura vira uma inicial — nunca uma imagem de outro perfume. */
+const placeholderFrame = (perfume) =>
+  `<div class="card-frame card-frame--empty"><span class="mark">${esc(perfume.name.trim()[0] || "·")}</span></div>`;
+
 export function card(perfume, { eager = false } = {}) {
-  const img = perfume.images[0];
+  const img = list(perfume.images)[0];
+  const traits = list(perfume.personality).slice(0, 3);
+  const families = list(perfume.families);
+
+  const frame = img
+    ? `<div class="card-frame">
+        ${picture({ dir: "/img/perfumes", base: img.base, alt: img.alt, sizes: "(min-width:1024px) 300px, 45vw", eager })}
+        <span class="card-rule" aria-hidden="true"></span>
+        ${families.length ? `<span class="card-tags">${families.slice(0, 2).map(esc).join(" · ")}</span>` : ""}
+      </div>`
+    : placeholderFrame(perfume);
+
   return `<a class="card reveal" href="${u(`/perfumes/${perfume.slug}/`)}"
-     data-card data-gender="${perfume.gender}"
-     data-families="${esc(perfume.families.join("|"))}"
-     data-occasions="${esc(perfume.occasions.join("|"))}"
-     data-personality="${esc(perfume.personality.join("|"))}"
-     data-climates="${esc(perfume.climates.join("|"))}"
-     data-intensity="${perfume.profile.intensity}"
+     data-card
+     data-name="${esc(perfume.name.toLowerCase())}"
+     data-gender="${esc(perfume.gender || "")}"
+     data-families="${esc(families.join("|"))}"
+     data-occasions="${esc(list(perfume.occasions).join("|"))}"
+     data-personality="${esc(traits.join("|"))}"
+     data-climates="${esc(list(perfume.climates).join("|"))}"
+     data-enriched="${isEnriched(perfume)}"
      data-track="perfume_view" data-track-perfume="${perfume.slug}">
-    <div class="card-frame">
-      ${picture({ dir: "/img/perfumes", base: img.base, alt: img.alt, sizes: "(min-width:1024px) 300px, 45vw", eager })}
-      <span class="card-rule" aria-hidden="true"></span>
-      <span class="card-tags">${perfume.families.slice(0, 2).map(esc).join(" · ")}</span>
-    </div>
+    ${frame}
     <div class="card-body">
       <h3 class="card-name">${esc(perfume.name)}</h3>
-      <div class="card-brand">${esc(perfume.brand)}</div>
-      <p class="card-tagline">${esc(perfume.tagline)}</p>
+      ${perfume.brand ? `<div class="card-brand">${esc(perfume.brand)}</div>` : ""}
+      ${traits.length ? `<p class="card-traits">${traits.map(esc).join(" · ")}</p>` : ""}
+      ${!traits.length && perfume.tagline ? `<p class="card-tagline">${esc(perfume.tagline)}</p>` : ""}
       <div class="card-foot">
-        <span class="card-price">${money(perfume.price)}</span>
-        <span class="card-more">Descobrir</span>
+        ${priceTag(perfume)}
+        <span class="card-more">${inStock(perfume) ? "Descobrir" : "Sob encomenda"}</span>
       </div>
     </div>
   </a>`;
+}
+
+export function priceTag(perfume) {
+  if (perfume.price == null) return `<span class="card-price muted">Sob consulta</span>`;
+  return `<span class="card-price">${money(perfume.price)}<em>no pix</em></span>`;
 }
 
 const NAV = [

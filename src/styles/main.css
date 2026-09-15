@@ -531,7 +531,48 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
   color: var(--gold-warm);
 }
 
+/* sem foto: uma inicial gravada, nunca a imagem de outro perfume */
+.card-frame--empty,
+.gallery-main--empty {
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(201, 164, 92, 0.07), transparent 62%),
+    var(--surface);
+  border: 1px solid var(--line);
+}
+.card-frame--empty { aspect-ratio: 3 / 4; }
+.card-frame--empty .mark,
+.gallery-main--empty .mark {
+  font-family: var(--serif);
+  font-size: 68px;
+  line-height: 1;
+  color: var(--gold-deep);
+  opacity: 0.5;
+}
+.gallery-main--empty { aspect-ratio: 3 / 4; }
+.gallery-main--empty .mark { font-size: 108px; }
+
 .card-body { padding: 16px 2px 0; }
+.card-traits {
+  margin: 10px 0 0;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-warm);
+}
+.card-price em,
+.convert-price em {
+  display: block;
+  font-style: normal;
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.convert-price em { font-size: 10px; margin-top: 5px; }
 .card-name {
   font-family: var(--serif);
   font-size: 23px;
@@ -684,6 +725,112 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
   font-style: italic;
   line-height: 1.6;
   color: var(--text);
+}
+
+/* decisão rápida — o que resolve nos primeiros dez segundos */
+.quick-for {
+  margin: 24px 0 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-soft);
+}
+.quick-for b {
+  display: block;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 7px;
+}
+
+/* flex em vez de grid: a última célula cresce e não sobra buraco */
+.quick-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  margin: 26px 0 0;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.quick-facts > div {
+  flex: 1 1 128px;
+  background: var(--ink);
+  padding: 14px 16px;
+}
+.quick-facts dt {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+.quick-facts dd { margin: 0; font-size: 13.5px; color: var(--text); }
+
+.convert-alt {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* termo explicado — o site ensina enquanto o cliente navega */
+.term {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  border: 1px solid var(--gold-deep);
+  border-radius: 50%;
+  font-size: 9px;
+  line-height: 1;
+  color: var(--gold);
+  vertical-align: middle;
+}
+.term-pop {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  z-index: 20;
+  width: max(220px, 18vw);
+  max-width: 78vw;
+  transform: translateX(-50%) translateY(4px);
+  padding: 13px 15px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-warm);
+  font-size: 12.5px;
+  font-weight: 300;
+  line-height: 1.6;
+  letter-spacing: 0;
+  text-transform: none;
+  text-align: left;
+  color: var(--text-soft);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.22s, transform 0.22s;
+}
+.term-pop b {
+  display: block;
+  font-weight: 500;
+  color: var(--gold-warm);
+  margin-bottom: 5px;
+}
+.term[aria-expanded="true"] .term-pop,
+.term:hover .term-pop {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%);
+}
+
+/* No celular o balão centralizado sairia da tela: ancora pela esquerda. */
+@media (max-width: 760px) {
+  .term-pop {
+    left: 0;
+    transform: translateY(4px);
+    width: min(280px, 72vw);
+  }
+  .term[aria-expanded="true"] .term-pop,
+  .term:hover .term-pop { transform: none; }
 }
 
 /* medidores de perfil */

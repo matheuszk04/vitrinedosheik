@@ -111,6 +111,26 @@
     }
   }
 
+  /* ------------------------------------------------ termos explicados
+     No desktop o hover resolve; no celular precisa de toque. */
+  document.querySelectorAll("[data-term]").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      var open = btn.getAttribute("aria-expanded") === "true";
+      document.querySelectorAll('[data-term][aria-expanded="true"]').forEach(function (other) {
+        other.setAttribute("aria-expanded", "false");
+      });
+      btn.setAttribute("aria-expanded", String(!open));
+      if (!open) track("term_opened", { term: btn.textContent.trim() });
+    });
+  });
+  document.addEventListener("click", function (e) {
+    if (e.target.closest("[data-term]")) return;
+    document.querySelectorAll('[data-term][aria-expanded="true"]').forEach(function (btn) {
+      btn.setAttribute("aria-expanded", "false");
+    });
+  });
+
   /* --------------------------------------------------------- galeria */
   var galleryMain = document.querySelector("[data-gallery-main]");
   if (galleryMain) {

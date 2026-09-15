@@ -7,7 +7,7 @@ import { readFile, writeFile, mkdir, rm, cp } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { setBase } from "./templates/base.mjs";
+import { setBase, setGlossary } from "./templates/base.mjs";
 import { home, explorer, perfumePage, mapPage, consultantPage } from "./templates/pages.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -60,6 +60,7 @@ async function build() {
   // BASE_PATH permite publicar num subcaminho (ex.: GitHub Pages de projeto)
   const base = (process.env.BASE_PATH || site.base || "").replace(/\/$/, "");
   setBase(base);
+  setGlossary(site.glossary);
 
   await rm(DIST, { recursive: true, force: true });
   await mkdir(DIST, { recursive: true });
