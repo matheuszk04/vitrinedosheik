@@ -13,6 +13,9 @@
   "url": "https://matheuszk04.github.io/vitrinedosheik",
   "base": "",
 
+  "//noindex": "true enquanto o conteúdo é rascunho: o site fica no ar mas fora do Google. Troque para false quando estiver pronto para ser encontrado.",
+  "noindex": true,
+
   "home": {
     "entrance": {
       "line": "Algumas fragrâncias entram em uma sala. Outras permanecem nela.",

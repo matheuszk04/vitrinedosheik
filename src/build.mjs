@@ -92,12 +92,17 @@ async function build() {
   await writeFile(join(DIST, "assets/main.css"), css);
   await cp(join(ROOT, "src/scripts/app.js"), join(DIST, "assets/app.js"));
 
-  const map = sitemap(site, pages.map(([, , url]) => url));
-  if (map) await emit("sitemap.xml", map);
-  await emit(
-    "robots.txt",
-    `User-agent: *\nAllow: /\n${site.url ? `Sitemap: ${site.url.replace(/\/$/, "")}/sitemap.xml\n` : ""}`
-  );
+  if (site.noindex) {
+    // site no ar, mas fora das buscas: ninguém chega sem o link
+    await emit("robots.txt", "User-agent: *\nDisallow: /\n");
+  } else {
+    const map = sitemap(site, pages.map(([, , url]) => url));
+    if (map) await emit("sitemap.xml", map);
+    await emit(
+      "robots.txt",
+      `User-agent: *\nAllow: /\n${site.url ? `Sitemap: ${site.url.replace(/\/$/, "")}/sitemap.xml\n` : ""}`
+    );
+  }
 
   console.log(`✓ ${pages.length} páginas geradas (${(bytes / 1024).toFixed(0)} KB de HTML)`);
   pages.forEach(([, , url]) => console.log(`  ${url}`));

@@ -173,7 +173,7 @@ export function layout({ site, title, description, path, body, jsonLd = null, og
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<link rel="canonical" href="${esc(canonical)}">
+<link rel="canonical" href="${esc(canonical)}">${site.noindex ? '\n<meta name="robots" content="noindex, nofollow">' : ""}
 <meta name="theme-color" content="#050505">
 
 <meta property="og:type" content="website">
