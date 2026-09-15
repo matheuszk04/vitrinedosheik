@@ -4,18 +4,14 @@
     "tagline": "Sua Essência. Sua presença.",
     "description": "Curadoria de perfumaria árabe. Fragrâncias escolhidas uma a uma, apresentadas por inteiro, entregues com atendimento individual."
   },
-
   "whatsapp": {
     "number": "5534999482146",
     "greeting": "Olá! Cheguei pelo site da Vitrine do Sheik e queria conversar sobre as fragrâncias."
   },
-
   "url": "https://matheuszk04.github.io/vitrinedosheik",
   "base": "",
-
   "//noindex": "true enquanto o conteúdo é rascunho: o site fica no ar mas fora do Google. Troque para false quando estiver pronto para ser encontrado.",
   "noindex": true,
-
   "home": {
     "entrance": {
       "line": "Algumas fragrâncias entram em uma sala. Outras permanecem nela.",
@@ -36,7 +32,6 @@
       "cta": "Falar com um consultor"
     }
   },
-
   "consultant": {
     "eyebrow": "Em breve",
     "title": "Consultor Olfativo",
@@ -44,37 +39,407 @@
     "note": "Enquanto isso, essa conversa acontece com uma pessoa de verdade.",
     "cta": "Falar com um consultor agora"
   },
-
   "olfactiveMap": {
     "axes": {
-      "x": { "min": "Fresco", "max": "Intenso" },
-      "y": { "min": "Seco · Amadeirado", "max": "Doce · Gourmand" }
+      "x": {
+        "min": "Fresco",
+        "max": "Intenso"
+      },
+      "y": {
+        "min": "Seco · Amadeirado",
+        "max": "Doce · Gourmand"
+      }
     },
     "regions": [
-      { "id": "citrico",     "label": "Cítrico",     "x": 0.16, "y": 0.28, "note": "Abertura clara e viva. Evapora rápido, refresca primeiro." },
-      { "id": "floral",      "label": "Floral",      "x": 0.30, "y": 0.66, "note": "O centro de muitas fragrâncias. Define caráter sem peso." },
-      { "id": "frutado",     "label": "Frutado",     "x": 0.26, "y": 0.86, "note": "Doçura leve e luminosa, quase sempre no topo." },
-      { "id": "amadeirado",  "label": "Amadeirado",  "x": 0.68, "y": 0.20, "note": "Estrutura seca. É o que segura a fragrância no lugar." },
-      { "id": "especiado",   "label": "Especiado",   "x": 0.72, "y": 0.50, "note": "Calor e atrito. Canela, pimenta, açafrão." },
-      { "id": "gourmand",    "label": "Gourmand",    "x": 0.80, "y": 0.88, "note": "Comestível e envolvente. Baunilha, pralinê, tâmara." },
-      { "id": "oriental",    "label": "Oriental · Âmbar", "x": 0.90, "y": 0.28, "note": "Resina e âmbar. A assinatura da perfumaria árabe." }
+      {
+        "id": "citrico",
+        "label": "Cítrico",
+        "x": 0.16,
+        "y": 0.28,
+        "note": "Abertura clara e viva. Evapora rápido, refresca primeiro."
+      },
+      {
+        "id": "floral",
+        "label": "Floral",
+        "x": 0.3,
+        "y": 0.66,
+        "note": "O centro de muitas fragrâncias. Define caráter sem peso."
+      },
+      {
+        "id": "frutado",
+        "label": "Frutado",
+        "x": 0.26,
+        "y": 0.86,
+        "note": "Doçura leve e luminosa, quase sempre no topo."
+      },
+      {
+        "id": "amadeirado",
+        "label": "Amadeirado",
+        "x": 0.68,
+        "y": 0.2,
+        "note": "Estrutura seca. É o que segura a fragrância no lugar."
+      },
+      {
+        "id": "especiado",
+        "label": "Especiado",
+        "x": 0.72,
+        "y": 0.5,
+        "note": "Calor e atrito. Canela, pimenta, açafrão."
+      },
+      {
+        "id": "gourmand",
+        "label": "Gourmand",
+        "x": 0.8,
+        "y": 0.88,
+        "note": "Comestível e envolvente. Baunilha, pralinê, tâmara."
+      },
+      {
+        "id": "oriental",
+        "label": "Oriental · Âmbar",
+        "x": 0.9,
+        "y": 0.28,
+        "note": "Resina e âmbar. A assinatura da perfumaria árabe."
+      }
     ]
   },
-
   "pyramidExplainer": {
     "title": "Como uma fragrância evolui",
     "body": "Um perfume não é um cheiro só. Ele acontece em camadas, e cada camada aparece em um tempo diferente.",
     "stages": [
-      { "id": "topo",    "label": "Topo",    "time": "Primeiros minutos", "body": "O que você sente ao borrifar. As moléculas mais leves — evaporam rápido e servem de apresentação." },
-      { "id": "coracao", "label": "Coração", "time": "30 min a 2 h",      "body": "A identidade real da fragrância. É isso que as pessoas associam a você." },
-      { "id": "fundo",   "label": "Fundo",   "time": "2 h em diante",     "body": "O que fica no tecido e na memória. A estrutura mais pesada e mais persistente." }
+      {
+        "id": "topo",
+        "label": "Topo",
+        "time": "Primeiros minutos",
+        "body": "O que você sente ao borrifar. As moléculas mais leves — evaporam rápido e servem de apresentação."
+      },
+      {
+        "id": "coracao",
+        "label": "Coração",
+        "time": "30 min a 2 h",
+        "body": "A identidade real da fragrância. É isso que as pessoas associam a você."
+      },
+      {
+        "id": "fundo",
+        "label": "Fundo",
+        "time": "2 h em diante",
+        "body": "O que fica no tecido e na memória. A estrutura mais pesada e mais persistente."
+      }
     ]
   },
-
   "usageDefaults": [
     "2 a 4 borrifadas em pontos de pulsação: pescoço, atrás das orelhas, pulsos.",
     "Não esfregue os pulsos depois de aplicar — o atrito quebra as notas de topo.",
     "Pele hidratada segura mais a fragrância. Aplique logo após o banho.",
     "Uma borrifada na roupa prolonga o rastro, mas teste antes em tecidos claros."
-  ]
+  ],
+  "glossary": {
+    "projecao": {
+      "label": "Projeção",
+      "body": "O quanto a fragrância é percebida por quem está ao seu redor, e não só por você."
+    },
+    "fixacao": {
+      "label": "Fixação",
+      "body": "Quanto tempo a fragrância continua perceptível na pele depois de aplicada."
+    },
+    "familia": {
+      "label": "Família olfativa",
+      "body": "O estilo aromático predominante — amadeirado, floral, gourmand, oriental."
+    },
+    "piramide": {
+      "label": "Pirâmide olfativa",
+      "body": "Um perfume acontece em camadas. Cada uma aparece num momento diferente das horas seguintes."
+    }
+  },
+  "paths": {
+    "eyebrow": "Dois caminhos",
+    "title": "Você já sabe o que procura?",
+    "explore": {
+      "label": "Explorar",
+      "body": "Ver a coleção inteira, filtrar por gênero, ocasião e perfil.",
+      "cta": "Ver as fragrâncias"
+    },
+    "discover": {
+      "label": "Descobrir",
+      "body": "Quatro perguntas rápidas. No fim, indicamos por onde começar.",
+      "cta": "Não sei por onde começar"
+    }
+  },
+  "discovery": {
+    "intro": {
+      "eyebrow": "Descobrir",
+      "title": "Comece pelo que você quer transmitir.",
+      "body": "Quatro perguntas, nenhuma delas técnica. Você não precisa saber o que é âmbar para responder.",
+      "cta": "Começar",
+      "skip": "Prefiro só olhar a coleção"
+    },
+    "unsure": "Ainda não sei",
+    "questions": [
+      {
+        "id": "transmitir",
+        "title": "O que você quer transmitir?",
+        "help": "Pense em como quer ser percebido ao entrar num ambiente.",
+        "options": [
+          {
+            "label": "Elegante",
+            "match": {
+              "personality": [
+                "Delicado",
+                "Versátil",
+                "Luminoso"
+              ],
+              "families": [
+                "Floral",
+                "Amadeirado"
+              ]
+            }
+          },
+          {
+            "label": "Marcante",
+            "match": {
+              "personality": [
+                "Intenso",
+                "Marcante",
+                "Magnético"
+              ],
+              "projection": [
+                4,
+                5
+              ]
+            }
+          },
+          {
+            "label": "Sedutor",
+            "match": {
+              "personality": [
+                "Quente",
+                "Envolvente",
+                "Magnético",
+                "Noturno"
+              ],
+              "families": [
+                "Oriental",
+                "Gourmand"
+              ]
+            }
+          },
+          {
+            "label": "Discreto",
+            "match": {
+              "personality": [
+                "Delicado",
+                "Luminoso",
+                "Versátil"
+              ],
+              "projection": [
+                1,
+                3
+              ]
+            }
+          },
+          {
+            "label": "Misterioso",
+            "match": {
+              "personality": [
+                "Noturno",
+                "Magnético",
+                "Intenso"
+              ],
+              "families": [
+                "Oriental",
+                "Amadeirado"
+              ]
+            }
+          },
+          {
+            "label": "Fresco",
+            "match": {
+              "personality": [
+                "Luminoso",
+                "Versátil"
+              ],
+              "families": [
+                "Floral",
+                "Frutado"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "quando",
+        "title": "Quando pretende usar?",
+        "help": "Se usar em mais de uma situação, escolha a mais frequente.",
+        "options": [
+          {
+            "label": "No dia a dia",
+            "match": {
+              "occasions": [
+                "Dia",
+                "Trabalho"
+              ],
+              "moments": [
+                "manhã",
+                "tarde"
+              ]
+            }
+          },
+          {
+            "label": "No trabalho",
+            "match": {
+              "occasions": [
+                "Trabalho",
+                "Dia"
+              ]
+            }
+          },
+          {
+            "label": "Em encontros",
+            "match": {
+              "occasions": [
+                "Encontro"
+              ]
+            }
+          },
+          {
+            "label": "À noite",
+            "match": {
+              "occasions": [
+                "Noite"
+              ],
+              "moments": [
+                "noite",
+                "madrugada"
+              ]
+            }
+          },
+          {
+            "label": "Em eventos",
+            "match": {
+              "occasions": [
+                "Evento",
+                "Jantar"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "percebido",
+        "title": "Como você prefere ser percebido?",
+        "help": "Isso é projeção: o quanto a fragrância chega em quem está perto.",
+        "options": [
+          {
+            "label": "Discreto",
+            "match": {
+              "projection": [
+                1,
+                2
+              ]
+            }
+          },
+          {
+            "label": "Equilibrado",
+            "match": {
+              "projection": [
+                3,
+                3
+              ]
+            }
+          },
+          {
+            "label": "Presente",
+            "match": {
+              "projection": [
+                4,
+                4
+              ]
+            }
+          },
+          {
+            "label": "Marcante",
+            "match": {
+              "projection": [
+                5,
+                5
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "sensacao",
+        "title": "Que sensação combina mais com você?",
+        "help": "Escolha pelo que soa bem, não pelo que você conhece.",
+        "options": [
+          {
+            "label": "Fresca",
+            "match": {
+              "families": [
+                "Floral",
+                "Frutado"
+              ]
+            }
+          },
+          {
+            "label": "Quente",
+            "match": {
+              "families": [
+                "Oriental",
+                "Especiado"
+              ]
+            }
+          },
+          {
+            "label": "Amadeirada",
+            "match": {
+              "families": [
+                "Amadeirado"
+              ]
+            }
+          },
+          {
+            "label": "Doce",
+            "match": {
+              "families": [
+                "Gourmand",
+                "Frutado"
+              ]
+            }
+          },
+          {
+            "label": "Floral",
+            "match": {
+              "families": [
+                "Floral"
+              ]
+            }
+          },
+          {
+            "label": "Especiada",
+            "match": {
+              "families": [
+                "Especiado"
+              ]
+            }
+          },
+          {
+            "label": "Envolvente",
+            "match": {
+              "families": [
+                "Oriental",
+                "Gourmand"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "result": {
+      "eyebrow": "Começaríamos por aqui",
+      "otherTitle": "Outras possibilidades",
+      "weakTitle": "Ainda não temos o suficiente para indicar com segurança",
+      "weakBody": "A curadoria com ficha completa ainda é curta. Um consultor cobre o resto em cinco minutos de conversa.",
+      "restart": "Responder de novo"
+    }
+  }
 }

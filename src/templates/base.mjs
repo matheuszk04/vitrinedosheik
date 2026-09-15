@@ -36,6 +36,26 @@ export const logoImg = (cls = "", eager = false) => {
   </picture>`;
 };
 
+/** URL absoluta — necessária em Open Graph e dados estruturados. */
+export const abs = (site, path) =>
+  site.url ? site.url.replace(/\/$/, "") + path : u(path);
+
+let CATALOG = [];
+export const setCatalog = (items) => { CATALOG = items || []; };
+
+/* Glossário: o site ensina enquanto o cliente navega, sem aula de química. */
+let GLOSSARY = {};
+export const setGlossary = (g) => { GLOSSARY = g || {}; };
+
+export function term(id) {
+  const t = GLOSSARY[id];
+  if (!t) return "";
+  return `<button class="term" type="button" data-term aria-expanded="false" aria-label="O que significa ${esc(t.label)}?">
+    <span aria-hidden="true">?</span>
+    <span class="term-pop" role="tooltip"><b>${esc(t.label)}</b>${esc(t.body)}</span>
+  </button>`;
+}
+
 export const waHref = (site, message) =>
   `https://wa.me/${site.whatsapp.number}?text=${encodeURIComponent(message)}`;
 
@@ -110,45 +130,87 @@ export function timeline(perfume, stages) {
   </div>`;
 }
 
+/* O catálogo cresce por etapas: nome primeiro, dados olfativos depois.
+   Tudo daqui para baixo precisa funcionar com perfil parcial. */
+export const list = (v) => (Array.isArray(v) ? v : []);
+
+/** Um perfume só participa de recomendação quando tem com o que ser comparado. */
+export const isEnriched = (p) =>
+  list(p.families).length > 0 && list(p.personality).length > 0 && !!p.profile;
+
+export const inStock = (p) => p.units == null || p.units > 0;
+
+/** Sem foto, a moldura vira uma inicial — nunca uma imagem de outro perfume. */
+const placeholderFrame = (perfume) =>
+  `<div class="card-frame card-frame--empty"><span class="mark">${esc(perfume.name.trim()[0] || "·")}</span></div>`;
+
 export function card(perfume, { eager = false } = {}) {
-  const img = perfume.images[0];
+  const img = list(perfume.images)[0];
+  const traits = list(perfume.personality).slice(0, 3);
+  const families = list(perfume.families);
+
+  const frame = img
+    ? `<div class="card-frame">
+        ${picture({ dir: "/img/perfumes", base: img.base, alt: img.alt, sizes: "(min-width:1024px) 300px, 45vw", eager })}
+        <span class="card-rule" aria-hidden="true"></span>
+        ${families.length ? `<span class="card-tags">${families.slice(0, 2).map(esc).join(" · ")}</span>` : ""}
+      </div>`
+    : placeholderFrame(perfume);
+
   return `<a class="card reveal" href="${u(`/perfumes/${perfume.slug}/`)}"
-     data-card data-gender="${perfume.gender}"
-     data-families="${esc(perfume.families.join("|"))}"
-     data-occasions="${esc(perfume.occasions.join("|"))}"
-     data-personality="${esc(perfume.personality.join("|"))}"
-     data-climates="${esc(perfume.climates.join("|"))}"
-     data-intensity="${perfume.profile.intensity}"
+     data-card
+     data-name="${esc(perfume.name.toLowerCase())}"
+     data-gender="${esc(perfume.gender || "")}"
+     data-families="${esc(families.join("|"))}"
+     data-occasions="${esc(list(perfume.occasions).join("|"))}"
+     data-personality="${esc(traits.join("|"))}"
+     data-climates="${esc(list(perfume.climates).join("|"))}"
+     data-enriched="${isEnriched(perfume)}"
      data-track="perfume_view" data-track-perfume="${perfume.slug}">
-    <div class="card-frame">
-      ${picture({ dir: "/img/perfumes", base: img.base, alt: img.alt, sizes: "(min-width:1024px) 300px, 45vw", eager })}
-      <span class="card-rule" aria-hidden="true"></span>
-      <span class="card-tags">${perfume.families.slice(0, 2).map(esc).join(" · ")}</span>
-    </div>
+    ${frame}
     <div class="card-body">
       <h3 class="card-name">${esc(perfume.name)}</h3>
-      <div class="card-brand">${esc(perfume.brand)}</div>
-      <p class="card-tagline">${esc(perfume.tagline)}</p>
+      ${perfume.brand ? `<div class="card-brand">${esc(perfume.brand)}</div>` : ""}
+      ${traits.length ? `<p class="card-traits">${traits.map(esc).join(" · ")}</p>` : ""}
+      ${!traits.length && perfume.tagline ? `<p class="card-tagline">${esc(perfume.tagline)}</p>` : ""}
       <div class="card-foot">
-        <span class="card-price">${money(perfume.price)}</span>
-        <span class="card-more">Descobrir</span>
+        ${priceTag(perfume)}
+        <span class="card-more">${inStock(perfume) ? "Descobrir" : "Sob encomenda"}</span>
       </div>
     </div>
   </a>`;
 }
 
+export function priceTag(perfume) {
+  if (perfume.price == null) return `<span class="card-price muted">Sob consulta</span>`;
+  return `<span class="card-price">${money(perfume.price)}<em>no pix</em></span>`;
+}
+
 const NAV = [
   { href: "/", label: "Início" },
   { href: "/fragrancias/", label: "Fragrâncias" },
+  { href: "/descobrir/", label: "Descobrir" },
   { href: "/mapa/", label: "Mapa olfativo" },
   { href: "/consultor/", label: "Consultor" },
 ];
 
+const GENDER_NAV = [
+  { value: "masculino", label: "Masculinos" },
+  { value: "feminino", label: "Femininos" },
+  { value: "unissex", label: "Unissex" },
+];
+
+const SEARCH_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>`;
+
 function nav(current, site) {
-  const items = NAV.map(
-    (item, i) => `<li><a class="nav-link" href="${u(item.href)}"${item.href === current ? ' aria-current="page"' : ""}>
-      <span class="idx">0${i + 1}</span>${esc(item.label)}</a></li>`
-  ).join("");
+  const items = NAV.map((item, i) => {
+    const sub = item.href === "/fragrancias/"
+      ? `<ul class="nav-sub">${GENDER_NAV.map((g) =>
+          `<li><a href="${u(`/fragrancias/?g=${g.value}`)}">${esc(g.label)}</a></li>`).join("")}</ul>`
+      : "";
+    return `<li><a class="nav-link" href="${u(item.href)}"${item.href === current ? ' aria-current="page"' : ""}>
+      <span class="idx">0${i + 1}</span>${esc(item.label)}</a>${sub}</li>`;
+  }).join("");
   return `<nav class="drawer" id="drawer" aria-label="Navegação principal">
     <button class="drawer-close" data-drawer-close aria-label="Fechar menu">&times;</button>
     <a class="brand" href="${u('/')}">${logoImg("", false)}<span class="brand-name">Vitrine do Sheik</span></a>
@@ -159,6 +221,16 @@ function nav(current, site) {
     </ul>
     <p class="nav-tail">Atendimento individual.<br>Sem carrinho, sem cadastro.</p>
   </nav>`;
+}
+
+function pageKind(path) {
+  if (path === "/") return "home";
+  if (path === "/fragrancias/") return "collection";
+  if (path === "/descobrir/") return "discovery";
+  if (path === "/mapa/") return "map";
+  if (path === "/consultor/") return "consultant";
+  if (path.startsWith("/perfumes/")) return "perfume";
+  return "other";
 }
 
 export function layout({ site, title, description, path, body, jsonLd = null, ogImage = null }) {
@@ -193,16 +265,19 @@ export function layout({ site, title, description, path, body, jsonLd = null, og
 <link rel="stylesheet" href="${u("/assets/main.css")}">
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : ""}
 </head>
-<body>
+<body data-page="${pageKind(path)}">
 <a class="skip" href="#conteudo">Ir para o conteúdo</a>
 <div class="texture" aria-hidden="true"></div>
 <div class="vignette" aria-hidden="true"></div>
 
 <header class="topbar">
   <a class="brand" href="${u('/')}">${logoImg("", true)}<span class="brand-name">Vitrine do Sheik</span></a>
-  <button class="burger" data-drawer-open aria-label="Abrir menu" aria-controls="drawer" aria-expanded="false">
-    <span></span><span></span>
-  </button>
+  <div class="topbar-actions">
+    <button class="icon-btn" data-search-open aria-label="Buscar fragrância">${SEARCH_ICON}</button>
+    <button class="burger" data-drawer-open aria-label="Abrir menu" aria-controls="drawer" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </div>
 </header>
 
 <div class="drawer-scrim" data-drawer-close aria-hidden="true"></div>
@@ -220,6 +295,29 @@ ${nav(path, site)}
   </footer>
 </div>
 
+<div class="search" id="busca" role="dialog" aria-modal="true" aria-label="Buscar fragrância" hidden>
+  <div class="search-scrim" data-search-close></div>
+  <div class="search-panel">
+    <div class="search-field">
+      ${SEARCH_ICON}
+      <input type="search" id="search-input" placeholder="Buscar por nome…" autocomplete="off"
+             spellcheck="false" aria-controls="search-results" aria-describedby="search-help">
+      <button class="search-close" data-search-close aria-label="Fechar busca">&times;</button>
+    </div>
+    <p class="search-help" id="search-help">Digite o nome da fragrância. Erros de digitação não atrapalham.</p>
+    <ul class="search-results" id="search-results" role="listbox"></ul>
+  </div>
+</div>
+
+<script type="application/json" data-search-index>${JSON.stringify(
+  CATALOG.map((p) => ({
+    n: p.name,
+    h: u(`/perfumes/${p.slug}/`),
+    b: p.brand || "",
+    p: p.price ?? null,
+    i: (Array.isArray(p.images) && p.images[0] ? u(`/img/perfumes/${p.images[0].base}-320.webp`) : ""),
+  }))
+)}</script>
 <script src="${u("/assets/app.js")}" defer></script>
 </body>
 </html>`;

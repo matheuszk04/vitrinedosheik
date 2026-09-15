@@ -4,160 +4,598 @@
     "name": "Asad Elixir",
     "brand": "Lattafa",
     "gender": "unissex",
-    "price": 279.90,
-    "volumeMl": null,
+    "price": 259,
+    "volumeMl": 100,
     "concentration": null,
-
     "tagline": "Uma presença que não precisa pedir atenção.",
-    "personality": ["Noturno", "Intenso", "Magnético"],
-    "families": ["Oriental", "Amadeirado", "Especiado"],
-
+    "personality": [
+      "Noturno",
+      "Intenso",
+      "Magnético"
+    ],
+    "families": [
+      "Oriental",
+      "Amadeirado",
+      "Especiado"
+    ],
     "atmosphere": "Madeira escura, luz baixa e o calor que sobra na sala depois que as pessoas já foram embora.",
     "story": "Construído sobre o contraste: especiaria afiada na entrada, tabaco e baunilha no centro, resina e âmbar no fundo. É uma fragrância que escurece com o tempo — começa cortante e termina quente.",
-
     "notes": {
-      "top": ["Pimenta Rosa", "Açafrão", "Toranja"],
-      "heart": ["Tabaco", "Baunilha", "Cedro"],
-      "base": ["Âmbar", "Olíbano", "Patchouli", "Cashmeran"]
+      "top": [
+        "Pimenta Rosa",
+        "Açafrão",
+        "Toranja"
+      ],
+      "heart": [
+        "Tabaco",
+        "Baunilha",
+        "Cedro"
+      ],
+      "base": [
+        "Âmbar",
+        "Olíbano",
+        "Patchouli",
+        "Cashmeran"
+      ]
     },
-
     "accords": [
-      { "label": "Especiado", "weight": 26 },
-      { "label": "Âmbar · Resina", "weight": 24 },
-      { "label": "Amadeirado", "weight": 22 },
-      { "label": "Baunilha", "weight": 18 },
-      { "label": "Cítrico", "weight": 10 }
+      {
+        "label": "Especiado",
+        "weight": 26
+      },
+      {
+        "label": "Âmbar · Resina",
+        "weight": 24
+      },
+      {
+        "label": "Amadeirado",
+        "weight": 22
+      },
+      {
+        "label": "Baunilha",
+        "weight": 18
+      },
+      {
+        "label": "Cítrico",
+        "weight": 10
+      }
     ],
-
-    "profile": { "intensity": 5, "projection": 4, "longevity": 5 },
-    "occasions": ["Noite", "Evento", "Encontro", "Jantar"],
-    "moments": ["noite", "madrugada"],
-    "climates": ["frio", "ameno"],
-
+    "profile": {
+      "intensity": 5,
+      "projection": 4,
+      "longevity": 5
+    },
+    "occasions": [
+      "Noite",
+      "Evento",
+      "Encontro",
+      "Jantar"
+    ],
+    "moments": [
+      "noite",
+      "madrugada"
+    ],
+    "climates": [
+      "frio",
+      "ameno"
+    ],
     "perception": {
       "opens": "Pimenta rosa e açafrão — uma abertura afiada, quase cortante.",
       "becomes": "Tabaco e baunilha amaciam a especiaria e formam o centro quente.",
       "ends": "Âmbar, olíbano e patchouli deixam um rastro resinoso e escuro."
     },
-
     "recommendedFor": "Quem prefere ser notado antes de dizer qualquer coisa. Funciona melhor à noite, no frio, e em quem não tem pressa de ser percebido.",
     "notFor": "Se você procura algo leve para o escritório ou para o calor do meio-dia, este vai pesar. Ele é grande, doce e resinoso — não é uma fragrância discreta.",
-
-    "map": { "x": 0.90, "y": 0.55 },
-
+    "map": {
+      "x": 0.9,
+      "y": 0.55
+    },
     "images": [
-      { "base": "asad-elixir-1", "alt": "Caixa do Asad Elixir, da Lattafa, vista de frente" },
-      { "base": "asad-elixir-2", "alt": "Detalhe do medalhão em relevo na caixa do Asad Elixir" }
+      {
+        "base": "asad-elixir-1",
+        "alt": "Caixa do Asad Elixir, da Lattafa, vista de frente"
+      },
+      {
+        "base": "asad-elixir-2",
+        "alt": "Detalhe do medalhão em relevo na caixa do Asad Elixir"
+      }
     ],
-
-    "review": ["gender", "profile", "personality", "atmosphere", "story", "accords", "occasions", "moments", "climates", "perception", "recommendedFor", "notFor"]
+    "review": [
+      "gender",
+      "profile",
+      "personality",
+      "atmosphere",
+      "story",
+      "accords",
+      "occasions",
+      "moments",
+      "climates",
+      "perception",
+      "recommendedFor",
+      "notFor"
+    ],
+    "priceCard": 280,
+    "units": 4
   },
-
   {
     "slug": "khamrah",
     "name": "Khamrah",
     "brand": "Lattafa",
     "gender": "unissex",
-    "price": 209.90,
+    "price": 209.9,
     "volumeMl": null,
     "concentration": null,
-
     "tagline": "Doce o suficiente para ser lembrado. Especiado o suficiente para não ser óbvio.",
-    "personality": ["Quente", "Envolvente", "Marcante"],
-    "families": ["Oriental", "Gourmand", "Especiado"],
-
+    "personality": [
+      "Quente",
+      "Envolvente",
+      "Marcante"
+    ],
+    "families": [
+      "Oriental",
+      "Gourmand",
+      "Especiado"
+    ],
     "atmosphere": "Noite fria, mesa posta, canela no ar e alguma coisa doce que acabou de sair do forno.",
     "story": "Uma fragrância gourmand construída sobre tâmaras e pralinê, com especiarias na entrada e uma base de baunilha e resina que não vai embora. É doce sem ser infantil — a especiaria segura o açúcar no lugar.",
-
     "notes": {
-      "top": ["Canela", "Noz-moscada", "Bergamota"],
-      "heart": ["Tâmaras", "Pralinê", "Tuberosa"],
-      "base": ["Baunilha", "Fava Tonka", "Âmbar", "Benjoim"]
+      "top": [
+        "Canela",
+        "Noz-moscada",
+        "Bergamota"
+      ],
+      "heart": [
+        "Tâmaras",
+        "Pralinê",
+        "Tuberosa"
+      ],
+      "base": [
+        "Baunilha",
+        "Fava Tonka",
+        "Âmbar",
+        "Benjoim"
+      ]
     },
-
     "accords": [
-      { "label": "Gourmand · Doce", "weight": 34 },
-      { "label": "Especiado", "weight": 24 },
-      { "label": "Âmbar · Resina", "weight": 20 },
-      { "label": "Baunilha", "weight": 16 },
-      { "label": "Cítrico", "weight": 6 }
+      {
+        "label": "Gourmand · Doce",
+        "weight": 34
+      },
+      {
+        "label": "Especiado",
+        "weight": 24
+      },
+      {
+        "label": "Âmbar · Resina",
+        "weight": 20
+      },
+      {
+        "label": "Baunilha",
+        "weight": 16
+      },
+      {
+        "label": "Cítrico",
+        "weight": 6
+      }
     ],
-
-    "profile": { "intensity": 5, "projection": 5, "longevity": 5 },
-    "occasions": ["Noite", "Encontro", "Evento"],
-    "moments": ["noite"],
-    "climates": ["frio", "ameno"],
-
+    "profile": {
+      "intensity": 5,
+      "projection": 5,
+      "longevity": 5
+    },
+    "occasions": [
+      "Noite",
+      "Encontro",
+      "Evento"
+    ],
+    "moments": [
+      "noite"
+    ],
+    "climates": [
+      "frio",
+      "ameno"
+    ],
     "perception": {
       "opens": "Canela e noz-moscada sobre um toque cítrico.",
       "becomes": "Tâmara e pralinê tornam tudo redondo e comestível.",
       "ends": "Baunilha, tonka e benjoim seguram o doce por horas."
     },
-
     "recommendedFor": "Quem gosta de ser sentido de longe e não tem medo de fragrância doce. É a escolha mais fácil de gostar da nossa curadoria.",
     "notFor": "Se você passa o dia em ambiente fechado com muita gente, ou não gosta de doce, evite. Ele projeta muito e não pede licença.",
-
-    "map": { "x": 0.85, "y": 0.90 },
-
+    "map": {
+      "x": 0.85,
+      "y": 0.9
+    },
     "images": [
-      { "base": "khamrah-1", "alt": "Caixa do Khamrah, da Lattafa, vista de frente" },
-      { "base": "khamrah-2", "alt": "Verso da caixa do Khamrah" }
+      {
+        "base": "khamrah-1",
+        "alt": "Caixa do Khamrah, da Lattafa, vista de frente"
+      },
+      {
+        "base": "khamrah-2",
+        "alt": "Verso da caixa do Khamrah"
+      }
     ],
-
-    "review": ["gender", "profile", "personality", "atmosphere", "story", "accords", "occasions", "moments", "climates", "perception", "recommendedFor", "notFor"]
+    "review": [
+      "gender",
+      "profile",
+      "personality",
+      "atmosphere",
+      "story",
+      "accords",
+      "occasions",
+      "moments",
+      "climates",
+      "perception",
+      "recommendedFor",
+      "notFor"
+    ]
   },
-
   {
     "slug": "atheeri",
     "name": "Atheeri",
     "brand": "Lattafa",
     "gender": "feminino",
-    "price": 519.90,
-    "volumeMl": null,
-    "concentration": null,
-
+    "price": 480,
+    "volumeMl": 100,
+    "concentration": "EDP",
     "tagline": "Presença sem peso.",
-    "personality": ["Luminoso", "Delicado", "Versátil"],
-    "families": ["Floral", "Frutado"],
-
+    "personality": [
+      "Luminoso",
+      "Delicado",
+      "Versátil"
+    ],
+    "families": [
+      "Floral",
+      "Frutado"
+    ],
     "atmosphere": "Manhã clara, flores brancas e pele limpa. Uma presença que ocupa o espaço certo e nada além dele.",
     "story": "A fragrância mais leve da curadoria. Abre frutada e cítrica, floresce no centro e termina em baunilha e almíscar — um fundo macio, sem peso. É a que funciona de dia e no calor.",
-
     "notes": {
-      "top": ["Frutas", "Notas Cítricas"],
-      "heart": ["Flores Brancas", "Notas Florais"],
-      "base": ["Baunilha", "Almíscar", "Notas Amadeiradas"]
+      "top": [
+        "Frutas",
+        "Notas Cítricas"
+      ],
+      "heart": [
+        "Flores Brancas",
+        "Notas Florais"
+      ],
+      "base": [
+        "Baunilha",
+        "Almíscar",
+        "Notas Amadeiradas"
+      ]
     },
-
     "accords": [
-      { "label": "Floral", "weight": 34 },
-      { "label": "Frutado", "weight": 26 },
-      { "label": "Almiscarado", "weight": 16 },
-      { "label": "Baunilha", "weight": 14 },
-      { "label": "Amadeirado", "weight": 10 }
+      {
+        "label": "Floral",
+        "weight": 34
+      },
+      {
+        "label": "Frutado",
+        "weight": 26
+      },
+      {
+        "label": "Almiscarado",
+        "weight": 16
+      },
+      {
+        "label": "Baunilha",
+        "weight": 14
+      },
+      {
+        "label": "Amadeirado",
+        "weight": 10
+      }
     ],
-
-    "profile": { "intensity": 3, "projection": 3, "longevity": 3 },
-    "occasions": ["Dia", "Trabalho", "Encontro"],
-    "moments": ["manhã", "tarde"],
-    "climates": ["quente", "ameno"],
-
+    "profile": {
+      "intensity": 3,
+      "projection": 3,
+      "longevity": 3
+    },
+    "occasions": [
+      "Dia",
+      "Trabalho",
+      "Encontro"
+    ],
+    "moments": [
+      "manhã",
+      "tarde"
+    ],
+    "climates": [
+      "quente",
+      "ameno"
+    ],
     "perception": {
       "opens": "Frutas e cítricos — uma abertura clara.",
       "becomes": "Flores brancas formam o centro.",
       "ends": "Baunilha e almíscar deixam um fundo limpo e macio."
     },
-
     "recommendedFor": "Quem quer uma fragrância que funcione de dia, no trabalho e no calor, sem dominar o ambiente.",
     "notFor": "Se você procura algo intenso, escuro e de longo alcance, este é exatamente o oposto disso.",
-
-    "map": { "x": 0.25, "y": 0.62 },
-
+    "map": {
+      "x": 0.25,
+      "y": 0.62
+    },
     "images": [
-      { "base": "atheeri-1", "alt": "Caixa do Atheeri, da Lattafa, vista de frente" },
-      { "base": "atheeri-2", "alt": "Verso da caixa do Atheeri" }
+      {
+        "base": "atheeri-1",
+        "alt": "Caixa do Atheeri, da Lattafa, vista de frente"
+      },
+      {
+        "base": "atheeri-2",
+        "alt": "Verso da caixa do Atheeri"
+      }
     ],
-
-    "review": ["price", "profile", "personality", "atmosphere", "story", "notes", "accords", "occasions", "moments", "climates", "perception", "recommendedFor", "notFor"]
+    "review": [
+      "price",
+      "profile",
+      "personality",
+      "atmosphere",
+      "story",
+      "notes",
+      "accords",
+      "occasions",
+      "moments",
+      "climates",
+      "perception",
+      "recommendedFor",
+      "notFor"
+    ],
+    "priceCard": 520,
+    "units": 1
+  },
+  {
+    "slug": "asad-edp-normal",
+    "name": "Asad EDP (Normal)",
+    "brand": null,
+    "gender": null,
+    "price": 243,
+    "priceCard": 263,
+    "units": 1,
+    "volumeMl": null,
+    "concentration": "EDP",
+    "images": [],
+    "review": [
+      "brand",
+      "gender"
+    ]
+  },
+  {
+    "slug": "asad-bourbon",
+    "name": "Asad Bourbon",
+    "brand": null,
+    "gender": null,
+    "price": 259,
+    "priceCard": 280,
+    "units": 0,
+    "volumeMl": null,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand",
+      "gender"
+    ]
+  },
+  {
+    "slug": "fakhar-black",
+    "name": "Fakhar Black",
+    "brand": null,
+    "gender": "masculino",
+    "price": 211,
+    "priceCard": 229,
+    "units": 2,
+    "volumeMl": 100,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand"
+    ]
+  },
+  {
+    "slug": "fakhar-platinum",
+    "name": "Fakhar Platinum",
+    "brand": null,
+    "gender": null,
+    "price": 174,
+    "priceCard": 189,
+    "units": 2,
+    "volumeMl": 100,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand",
+      "gender"
+    ]
+  },
+  {
+    "slug": "club-de-nuit-intense",
+    "name": "Club de Nuit Intense",
+    "brand": null,
+    "gender": null,
+    "price": 269,
+    "priceCard": 291,
+    "units": 2,
+    "volumeMl": null,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand",
+      "gender"
+    ]
+  },
+  {
+    "slug": "afnan-9pm",
+    "name": "Afnan 9PM",
+    "brand": null,
+    "gender": null,
+    "price": 264,
+    "priceCard": 286,
+    "units": 1,
+    "volumeMl": null,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand",
+      "gender"
+    ]
+  },
+  {
+    "slug": "yara-candy",
+    "name": "Yara Candy",
+    "brand": null,
+    "gender": "feminino",
+    "price": 190,
+    "priceCard": 206,
+    "units": 3,
+    "volumeMl": 100,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand"
+    ]
+  },
+  {
+    "slug": "club-de-nuit-maleka",
+    "name": "Club de Nuit Maleka",
+    "brand": null,
+    "gender": "feminino",
+    "price": 306,
+    "priceCard": 331,
+    "units": 1,
+    "volumeMl": null,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand"
+    ]
+  },
+  {
+    "slug": "vulcan-feu",
+    "name": "Vulcan Feu",
+    "brand": null,
+    "gender": null,
+    "price": 364,
+    "priceCard": 394,
+    "units": 2,
+    "volumeMl": null,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand",
+      "gender"
+    ]
+  },
+  {
+    "slug": "vulcan-sable",
+    "name": "Vulcan Sable",
+    "brand": null,
+    "gender": null,
+    "price": 264,
+    "priceCard": 286,
+    "units": 1,
+    "volumeMl": null,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand",
+      "gender"
+    ]
+  },
+  {
+    "slug": "liquid-brun",
+    "name": "Liquid Brun",
+    "brand": null,
+    "gender": null,
+    "price": 359,
+    "priceCard": 388,
+    "units": 1,
+    "volumeMl": null,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand",
+      "gender"
+    ]
+  },
+  {
+    "slug": "eclaire",
+    "name": "Eclaire",
+    "brand": null,
+    "gender": null,
+    "price": 264,
+    "priceCard": 286,
+    "units": 1,
+    "volumeMl": null,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand",
+      "gender"
+    ]
+  },
+  {
+    "slug": "hawas-kobra",
+    "name": "Hawas Kobra",
+    "brand": null,
+    "gender": null,
+    "price": 317,
+    "priceCard": 343,
+    "units": 1,
+    "volumeMl": null,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand",
+      "gender"
+    ]
+  },
+  {
+    "slug": "fakhar-gold",
+    "name": "Fakhar Gold",
+    "brand": null,
+    "gender": null,
+    "price": 211,
+    "priceCard": 229,
+    "units": 1,
+    "volumeMl": null,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand",
+      "gender"
+    ]
+  },
+  {
+    "slug": "al-wesal",
+    "name": "Al Wesal",
+    "brand": null,
+    "gender": null,
+    "price": 158,
+    "priceCard": 171,
+    "units": 1,
+    "volumeMl": null,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand",
+      "gender"
+    ]
+  },
+  {
+    "slug": "mandarin-sky",
+    "name": "Mandarin Sky",
+    "brand": null,
+    "gender": null,
+    "price": 222,
+    "priceCard": 240,
+    "units": 1,
+    "volumeMl": null,
+    "concentration": null,
+    "images": [],
+    "review": [
+      "brand",
+      "gender"
+    ]
   }
 ]

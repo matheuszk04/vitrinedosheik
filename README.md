@@ -50,8 +50,17 @@ node src/build.mjs     # gera o site em dist/
 node src/serve.mjs     # abre em http://localhost:4000
 ```
 
-Para regerar as imagens (só quando trocar fotos): `python3 src/optimize-images.py`
-Para regerar as fontes (raramente): `python3 src/fetch-fonts.py`
+Outros comandos, todos opcionais:
+
+| Comando | Quando usar |
+|---|---|
+| `python3 src/optimize-images.py` | trocou ou adicionou fotos |
+| `python3 src/import-catalog.py planilha.xlsx` | atualizou a planilha de estoque |
+| `python3 src/make-enrichment-sheet.py` | quer preencher os dados olfativos |
+| `python3 src/import-enrichment.py enriquecimento.xlsx` | devolver a planilha preenchida |
+| `python3 src/fetch-fonts.py` | raramente; só se trocar a tipografia |
+
+Os dois importadores rodam em simulação por padrão. Acrescente `--aplicar` para gravar.
 
 ---
 
@@ -89,15 +98,53 @@ dist/             o site gerado (não versionado)
 
 ---
 
+## Os dois caminhos
+
+O site atende dois visitantes diferentes pela mesma porta:
+
+- **Explorar** (`/fragrancias/`) — para quem já sabe o que quer. Coleção completa,
+  filtros por gênero, família, ocasião, perfil e clima. A navegação também aceita
+  `/fragrancias/?g=masculino` para entrar direto numa categoria.
+- **Descobrir** (`/descobrir/`) — para quem não sabe. Quatro perguntas, nenhuma
+  técnica, e até três indicações no fim. "Ainda não sei" é resposta válida em
+  qualquer pergunta e não prejudica o resultado.
+
+A busca abre pelo ícone de lupa em qualquer página (ou pela tecla `/` no
+computador). Ela tolera erro de digitação: "kamrah" encontra Khamrah.
+
+### Perfil completo e perfil parcial
+
+Um perfume só entra na recomendação quando tem família, personalidade e perfil
+preenchidos. Os demais continuam aparecendo na busca, na coleção e nos filtros —
+eles só não são recomendados com dados que não existem.
+
+Editar `content/discovery` dentro de `site.json` muda as perguntas, as opções e
+o que cada resposta procura, sem tocar em código.
+
 ## Analytics
 
 Os eventos já estão instrumentados e empurrados para `window.dataLayer`:
 
-`perfume_view` · `whatsapp_click` (com a origem do clique) · `filter_use` ·
-`map_region` · `map_perfume`
+`homepage_view` · `fragrance_collection_view` · `fragrance_view` ·
+`fragrance_search` · `fragrance_search_result_clicked` · `category_male_clicked` ·
+`category_female_clicked` · `filter_used` · `discovery_started` ·
+`discovery_question_answered` · `discovery_completed` · `discovery_result_clicked` ·
+`olfactive_map_opened` · `olfactive_map_interaction` · `consultant_opened` ·
+`whatsapp_clicked` · `whatsapp_clicked_from_product` ·
+`whatsapp_clicked_from_discovery` · `scroll_depth` · `term_opened`
 
 Basta instalar GA4, GTM ou Meta Pixel — nada nos templates precisa mudar.
 Para conferir no navegador: `window.__vdsDebug = true` e clique pelo site.
+
+### Campanhas
+
+Os parâmetros `utm_*`, `gclid` e `fbclid` são capturados na chegada e guardados
+pela sessão inteira, então o clique no WhatsApp lá no fim ainda sabe de qual
+anúncio o visitante veio. Eles vão junto em todo evento.
+
+Eles **não** entram na mensagem que o cliente envia — quem veio da descoberta já
+diz isso em português na própria mensagem, e ninguém precisa mandar código de
+campanha para o vendedor.
 
 ---
 

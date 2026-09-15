@@ -341,6 +341,284 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
   .drawer .brand { display: none; }
 }
 
+.topbar-actions { display: flex; align-items: center; gap: 4px; }
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  color: var(--text-soft);
+  transition: color 0.2s;
+}
+.icon-btn:hover { color: var(--gold-warm); }
+.icon-btn svg { width: 19px; height: 19px; }
+
+.nav-sub {
+  list-style: none;
+  margin: 0 0 4px;
+  padding: 2px 0 10px 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+}
+.nav-sub a {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  transition: color 0.2s;
+}
+.nav-sub a:hover { color: var(--gold-warm); }
+
+/* --------------------------------------------------------------------------
+   BUSCA
+   -------------------------------------------------------------------------- */
+.search { position: fixed; inset: 0; z-index: 70; }
+.search-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 3, 3, 0.82);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  transition: opacity 0.22s;
+}
+.search.is-open .search-scrim { opacity: 1; }
+
+.search-panel {
+  position: relative;
+  width: min(620px, 100%);
+  margin: 0 auto;
+  padding: calc(18px + var(--pad-top)) 18px 18px;
+  background: var(--ink-2);
+  border-bottom: 1px solid var(--line-warm);
+  transform: translateY(-14px);
+  opacity: 0;
+  transition: transform 0.26s var(--ease), opacity 0.26s;
+}
+.search.is-open .search-panel { transform: none; opacity: 1; }
+@media (min-width: 760px) {
+  .search-panel { margin-top: 8vh; border: 1px solid var(--line-warm); }
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--line-warm);
+  padding-bottom: 12px;
+}
+.search-field svg { width: 18px; height: 18px; color: var(--gold); flex: none; }
+.search-field input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 300;
+}
+.search-field input::placeholder { color: var(--text-dim); }
+.search-field input::-webkit-search-cancel-button { display: none; }
+.search-close { font-size: 24px; line-height: 1; color: var(--text-dim); padding: 0 4px; }
+
+.search-help {
+  margin: 12px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.search-results { list-style: none; margin: 14px 0 0; padding: 0; max-height: 58vh; overflow-y: auto; }
+.search-results a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 6px;
+  border-bottom: 1px solid var(--line);
+}
+.search-results a:hover { background: rgba(201, 164, 92, 0.05); }
+.search-results img { width: 42px; height: 56px; object-fit: cover; flex: none; }
+.search-mark {
+  width: 42px; height: 56px;
+  display: grid; place-items: center;
+  flex: none;
+  background: var(--surface);
+  font-family: var(--serif);
+  font-size: 20px;
+  color: var(--gold-deep);
+}
+.search-name {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--text);
+}
+.search-name em {
+  display: block;
+  font-style: normal;
+  font-family: var(--sans);
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+.search-price { font-family: var(--serif); font-size: 15px; color: var(--gold-warm); flex: none; }
+.search-empty { padding: 22px 6px; color: var(--text-dim); font-size: 14px; }
+
+/* --------------------------------------------------------------------------
+   DOIS CAMINHOS
+   -------------------------------------------------------------------------- */
+.paths-head { margin-bottom: 30px; }
+.paths-head h2 { margin-top: 14px; font-size: clamp(25px, 4vw, 34px); }
+.paths-grid { display: grid; gap: 16px; }
+@media (min-width: 720px) { .paths-grid { grid-template-columns: 1fr 1fr; } }
+
+.path {
+  display: block;
+  padding: 30px 26px;
+  border: 1px solid var(--line);
+  transition: border-color 0.3s, background 0.3s, transform 0.3s var(--ease);
+}
+.path:hover {
+  border-color: var(--gold-line);
+  background: rgba(201, 164, 92, 0.04);
+  transform: translateY(-3px);
+}
+.path--alt { background: linear-gradient(180deg, rgba(201, 164, 92, 0.06), transparent 70%); }
+.path-label {
+  font-family: var(--serif);
+  font-size: 27px;
+  color: var(--gold-warm);
+  display: block;
+}
+.path p { margin: 12px 0 20px; font-size: 14px; line-height: 1.7; color: var(--text-soft); }
+.path-cta {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.path:hover .path-cta { color: var(--gold-warm); }
+
+/* --------------------------------------------------------------------------
+   FLUXO DE DESCOBERTA
+   -------------------------------------------------------------------------- */
+.step { border: none; margin: 0; padding: 0; }
+.step-title { font-size: clamp(27px, 5vw, 40px); line-height: 1.16; margin: 16px 0 0; }
+.step-title--intro { margin-bottom: 18px; }
+.step-count {
+  font-size: 9.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.step-help { margin: 14px 0 0; font-size: 13.5px; color: var(--text-dim); line-height: 1.7; }
+.step-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; margin-top: 34px; }
+
+.step-options { display: grid; gap: 10px; margin-top: 30px; }
+@media (min-width: 620px) { .step-options { grid-template-columns: 1fr 1fr; } }
+
+.opt {
+  text-align: left;
+  padding: 17px 20px;
+  border: 1px solid var(--line);
+  font-size: 15px;
+  color: var(--text);
+  transition: all 0.25s;
+}
+.opt:hover {
+  border-color: var(--gold-line);
+  background: rgba(201, 164, 92, 0.05);
+  color: var(--gold-warm);
+}
+.opt--unsure {
+  border-style: dashed;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+@media (min-width: 620px) { .opt--unsure { grid-column: 1 / -1; } }
+
+.step-back {
+  margin-top: 24px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.step-back:hover { color: var(--gold-warm); }
+
+.progress { height: 1px; background: var(--line); margin-bottom: 34px; }
+.progress span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--gold);
+  transition: width 0.45s var(--ease);
+}
+
+/* recomendação */
+.rec {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--line);
+  margin-top: 24px;
+  transition: border-color 0.3s;
+}
+.rec:hover { border-color: var(--gold-line); }
+.rec--primary { border-color: var(--gold-line); background: rgba(201, 164, 92, 0.05); }
+.rec-frame { width: 78px; flex: none; aspect-ratio: 3 / 4; overflow: hidden; background: var(--surface); display: grid; place-items: center; }
+.rec-frame img { width: 100%; height: 100%; object-fit: cover; }
+.rec-mark { font-family: var(--serif); font-size: 30px; color: var(--gold-deep); }
+.rec-body { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.rec-body strong { font-family: var(--serif); font-weight: 400; font-size: 21px; color: var(--text); }
+.rec-body em { font-style: normal; font-size: 13px; color: var(--text-soft); line-height: 1.5; }
+.rec-price { font-family: var(--serif); font-size: 16px; color: var(--gold-warm); }
+.rec-other {
+  margin: 38px 0 0;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+}
+.rec-grid { display: grid; gap: 12px; }
+.rec-note { margin: 26px 0 0; font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+.rec-cta { margin-top: 26px; width: 100%; }
+
+/* --------------------------------------------------------------------------
+   CTA FIXO NO MOBILE — discreto, some no desktop
+   -------------------------------------------------------------------------- */
+.sticky-cta {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 35;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 18px calc(12px + var(--pad-bottom));
+  background: rgba(8, 8, 8, 0.94);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line-warm);
+}
+.sticky-name {
+  font-family: var(--serif);
+  font-size: 15px;
+  color: var(--text-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sticky-cta .btn { min-height: 42px; padding: 0 20px; flex: none; }
+@media (min-width: 900px) { .sticky-cta { display: none; } }
+
 /* --------------------------------------------------------------------------
    BOTÕES
    -------------------------------------------------------------------------- */
@@ -531,7 +809,48 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
   color: var(--gold-warm);
 }
 
+/* sem foto: uma inicial gravada, nunca a imagem de outro perfume */
+.card-frame--empty,
+.gallery-main--empty {
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(201, 164, 92, 0.07), transparent 62%),
+    var(--surface);
+  border: 1px solid var(--line);
+}
+.card-frame--empty { aspect-ratio: 3 / 4; }
+.card-frame--empty .mark,
+.gallery-main--empty .mark {
+  font-family: var(--serif);
+  font-size: 68px;
+  line-height: 1;
+  color: var(--gold-deep);
+  opacity: 0.5;
+}
+.gallery-main--empty { aspect-ratio: 3 / 4; }
+.gallery-main--empty .mark { font-size: 108px; }
+
 .card-body { padding: 16px 2px 0; }
+.card-traits {
+  margin: 10px 0 0;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-warm);
+}
+.card-price em,
+.convert-price em {
+  display: block;
+  font-style: normal;
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.convert-price em { font-size: 10px; margin-top: 5px; }
 .card-name {
   font-family: var(--serif);
   font-size: 23px;
@@ -684,6 +1003,112 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
   font-style: italic;
   line-height: 1.6;
   color: var(--text);
+}
+
+/* decisão rápida — o que resolve nos primeiros dez segundos */
+.quick-for {
+  margin: 24px 0 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-soft);
+}
+.quick-for b {
+  display: block;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 7px;
+}
+
+/* flex em vez de grid: a última célula cresce e não sobra buraco */
+.quick-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  margin: 26px 0 0;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.quick-facts > div {
+  flex: 1 1 128px;
+  background: var(--ink);
+  padding: 14px 16px;
+}
+.quick-facts dt {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+.quick-facts dd { margin: 0; font-size: 13.5px; color: var(--text); }
+
+.convert-alt {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* termo explicado — o site ensina enquanto o cliente navega */
+.term {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  border: 1px solid var(--gold-deep);
+  border-radius: 50%;
+  font-size: 9px;
+  line-height: 1;
+  color: var(--gold);
+  vertical-align: middle;
+}
+.term-pop {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  z-index: 20;
+  width: max(220px, 18vw);
+  max-width: 78vw;
+  transform: translateX(-50%) translateY(4px);
+  padding: 13px 15px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-warm);
+  font-size: 12.5px;
+  font-weight: 300;
+  line-height: 1.6;
+  letter-spacing: 0;
+  text-transform: none;
+  text-align: left;
+  color: var(--text-soft);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.22s, transform 0.22s;
+}
+.term-pop b {
+  display: block;
+  font-weight: 500;
+  color: var(--gold-warm);
+  margin-bottom: 5px;
+}
+.term[aria-expanded="true"] .term-pop,
+.term:hover .term-pop {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%);
+}
+
+/* No celular o balão centralizado sairia da tela: ancora pela esquerda. */
+@media (max-width: 760px) {
+  .term-pop {
+    left: 0;
+    transform: translateY(4px);
+    width: min(280px, 72vw);
+  }
+  .term[aria-expanded="true"] .term-pop,
+  .term:hover .term-pop { transform: none; }
 }
 
 /* medidores de perfil */
