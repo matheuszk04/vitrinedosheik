@@ -1,0 +1,163 @@
+[
+  {
+    "slug": "asad-elixir",
+    "name": "Asad Elixir",
+    "brand": "Lattafa",
+    "gender": "unissex",
+    "price": 279.90,
+    "volumeMl": null,
+    "concentration": null,
+
+    "tagline": "Uma presença que não precisa pedir atenção.",
+    "personality": ["Noturno", "Intenso", "Magnético"],
+    "families": ["Oriental", "Amadeirado", "Especiado"],
+
+    "atmosphere": "Madeira escura, luz baixa e o calor que sobra na sala depois que as pessoas já foram embora.",
+    "story": "Construído sobre o contraste: especiaria afiada na entrada, tabaco e baunilha no centro, resina e âmbar no fundo. É uma fragrância que escurece com o tempo — começa cortante e termina quente.",
+
+    "notes": {
+      "top": ["Pimenta Rosa", "Açafrão", "Toranja"],
+      "heart": ["Tabaco", "Baunilha", "Cedro"],
+      "base": ["Âmbar", "Olíbano", "Patchouli", "Cashmeran"]
+    },
+
+    "accords": [
+      { "label": "Especiado", "weight": 26 },
+      { "label": "Âmbar · Resina", "weight": 24 },
+      { "label": "Amadeirado", "weight": 22 },
+      { "label": "Baunilha", "weight": 18 },
+      { "label": "Cítrico", "weight": 10 }
+    ],
+
+    "profile": { "intensity": 5, "projection": 4, "longevity": 5 },
+    "occasions": ["Noite", "Evento", "Encontro", "Jantar"],
+    "moments": ["noite", "madrugada"],
+    "climates": ["frio", "ameno"],
+
+    "perception": {
+      "opens": "Pimenta rosa e açafrão — uma abertura afiada, quase cortante.",
+      "becomes": "Tabaco e baunilha amaciam a especiaria e formam o centro quente.",
+      "ends": "Âmbar, olíbano e patchouli deixam um rastro resinoso e escuro."
+    },
+
+    "recommendedFor": "Quem prefere ser notado antes de dizer qualquer coisa. Funciona melhor à noite, no frio, e em quem não tem pressa de ser percebido.",
+    "notFor": "Se você procura algo leve para o escritório ou para o calor do meio-dia, este vai pesar. Ele é grande, doce e resinoso — não é uma fragrância discreta.",
+
+    "map": { "x": 0.90, "y": 0.55 },
+
+    "images": [
+      { "base": "asad-elixir-1", "alt": "Caixa do Asad Elixir, da Lattafa, vista de frente" },
+      { "base": "asad-elixir-2", "alt": "Detalhe do medalhão em relevo na caixa do Asad Elixir" }
+    ],
+
+    "review": ["gender", "profile", "personality", "atmosphere", "story", "accords", "occasions", "moments", "climates", "perception", "recommendedFor", "notFor"]
+  },
+
+  {
+    "slug": "khamrah",
+    "name": "Khamrah",
+    "brand": "Lattafa",
+    "gender": "unissex",
+    "price": 209.90,
+    "volumeMl": null,
+    "concentration": null,
+
+    "tagline": "Doce o suficiente para ser lembrado. Especiado o suficiente para não ser óbvio.",
+    "personality": ["Quente", "Envolvente", "Marcante"],
+    "families": ["Oriental", "Gourmand", "Especiado"],
+
+    "atmosphere": "Noite fria, mesa posta, canela no ar e alguma coisa doce que acabou de sair do forno.",
+    "story": "Uma fragrância gourmand construída sobre tâmaras e pralinê, com especiarias na entrada e uma base de baunilha e resina que não vai embora. É doce sem ser infantil — a especiaria segura o açúcar no lugar.",
+
+    "notes": {
+      "top": ["Canela", "Noz-moscada", "Bergamota"],
+      "heart": ["Tâmaras", "Pralinê", "Tuberosa"],
+      "base": ["Baunilha", "Fava Tonka", "Âmbar", "Benjoim"]
+    },
+
+    "accords": [
+      { "label": "Gourmand · Doce", "weight": 34 },
+      { "label": "Especiado", "weight": 24 },
+      { "label": "Âmbar · Resina", "weight": 20 },
+      { "label": "Baunilha", "weight": 16 },
+      { "label": "Cítrico", "weight": 6 }
+    ],
+
+    "profile": { "intensity": 5, "projection": 5, "longevity": 5 },
+    "occasions": ["Noite", "Encontro", "Evento"],
+    "moments": ["noite"],
+    "climates": ["frio", "ameno"],
+
+    "perception": {
+      "opens": "Canela e noz-moscada sobre um toque cítrico.",
+      "becomes": "Tâmara e pralinê tornam tudo redondo e comestível.",
+      "ends": "Baunilha, tonka e benjoim seguram o doce por horas."
+    },
+
+    "recommendedFor": "Quem gosta de ser sentido de longe e não tem medo de fragrância doce. É a escolha mais fácil de gostar da nossa curadoria.",
+    "notFor": "Se você passa o dia em ambiente fechado com muita gente, ou não gosta de doce, evite. Ele projeta muito e não pede licença.",
+
+    "map": { "x": 0.85, "y": 0.90 },
+
+    "images": [
+      { "base": "khamrah-1", "alt": "Caixa do Khamrah, da Lattafa, vista de frente" },
+      { "base": "khamrah-2", "alt": "Verso da caixa do Khamrah" }
+    ],
+
+    "review": ["gender", "profile", "personality", "atmosphere", "story", "accords", "occasions", "moments", "climates", "perception", "recommendedFor", "notFor"]
+  },
+
+  {
+    "slug": "atheeri",
+    "name": "Atheeri",
+    "brand": "Lattafa",
+    "gender": "feminino",
+    "price": 519.90,
+    "volumeMl": null,
+    "concentration": null,
+
+    "tagline": "Presença sem peso.",
+    "personality": ["Luminoso", "Delicado", "Versátil"],
+    "families": ["Floral", "Frutado"],
+
+    "atmosphere": "Manhã clara, flores brancas e pele limpa. Uma presença que ocupa o espaço certo e nada além dele.",
+    "story": "A fragrância mais leve da curadoria. Abre frutada e cítrica, floresce no centro e termina em baunilha e almíscar — um fundo macio, sem peso. É a que funciona de dia e no calor.",
+
+    "notes": {
+      "top": ["Frutas", "Notas Cítricas"],
+      "heart": ["Flores Brancas", "Notas Florais"],
+      "base": ["Baunilha", "Almíscar", "Notas Amadeiradas"]
+    },
+
+    "accords": [
+      { "label": "Floral", "weight": 34 },
+      { "label": "Frutado", "weight": 26 },
+      { "label": "Almiscarado", "weight": 16 },
+      { "label": "Baunilha", "weight": 14 },
+      { "label": "Amadeirado", "weight": 10 }
+    ],
+
+    "profile": { "intensity": 3, "projection": 3, "longevity": 3 },
+    "occasions": ["Dia", "Trabalho", "Encontro"],
+    "moments": ["manhã", "tarde"],
+    "climates": ["quente", "ameno"],
+
+    "perception": {
+      "opens": "Frutas e cítricos — uma abertura clara.",
+      "becomes": "Flores brancas formam o centro.",
+      "ends": "Baunilha e almíscar deixam um fundo limpo e macio."
+    },
+
+    "recommendedFor": "Quem quer uma fragrância que funcione de dia, no trabalho e no calor, sem dominar o ambiente.",
+    "notFor": "Se você procura algo intenso, escuro e de longo alcance, este é exatamente o oposto disso.",
+
+    "map": { "x": 0.25, "y": 0.62 },
+
+    "images": [
+      { "base": "atheeri-1", "alt": "Caixa do Atheeri, da Lattafa, vista de frente" },
+      { "base": "atheeri-2", "alt": "Verso da caixa do Atheeri" }
+    ],
+
+    "review": ["price", "profile", "personality", "atmosphere", "story", "notes", "accords", "occasions", "moments", "climates", "perception", "recommendedFor", "notFor"]
+  }
+]
