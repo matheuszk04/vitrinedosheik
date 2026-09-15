@@ -25,9 +25,9 @@ jobs:
           node-version: 22
 
       - name: Gerar o site
-        # BASE_PATH fica vazio em domínio próprio. Para GitHub Pages de projeto
-        # (usuario.github.io/vitrinedosheik), troque por: BASE_PATH=/vitrinedosheik
-        run: BASE_PATH="" node src/build.mjs
+        # Publicado em matheuszk04.github.io/vitrinedosheik (subcaminho).
+        # Ao migrar para domínio próprio, deixe BASE_PATH vazio.
+        run: BASE_PATH="/vitrinedosheik" node src/build.mjs
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

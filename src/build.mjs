@@ -28,7 +28,7 @@ function sitemap(site, paths) {
   const urls = paths
     .map((p) => `  <url><loc>${base}${p}</loc></url>`)
     .join("\n");
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.w3.org/1999/sitemap/0.9">\n${urls}\n</urlset>\n`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
 }
 
 /** Avisa no terminal sobre campos que ainda dependem de revisão do dono da loja. */
@@ -58,7 +58,8 @@ async function build() {
   const [site, perfumes] = await Promise.all([readJson("content/site.json"), readJson("content/perfumes.json")]);
 
   // BASE_PATH permite publicar num subcaminho (ex.: GitHub Pages de projeto)
-  setBase(process.env.BASE_PATH || site.base || "");
+  const base = (process.env.BASE_PATH || site.base || "").replace(/\/$/, "");
+  setBase(base);
 
   await rm(DIST, { recursive: true, force: true });
   await mkdir(DIST, { recursive: true });
@@ -86,7 +87,9 @@ async function build() {
     readFile(join(ROOT, "src/styles/fonts.css"), "utf8"),
     readFile(join(ROOT, "src/styles/main.css"), "utf8"),
   ]);
-  await writeFile(join(DIST, "assets/main.css"), `${fontsCss}\n${mainCss}`);
+  // as url() do @font-face são absolutas: precisam do mesmo prefixo das páginas
+  const css = `${fontsCss}\n${mainCss}`.replace(/url\(\/fonts\//g, `url(${base}/fonts/`);
+  await writeFile(join(DIST, "assets/main.css"), css);
   await cp(join(ROOT, "src/scripts/app.js"), join(DIST, "assets/app.js"));
 
   const map = sitemap(site, pages.map(([, , url]) => url));
