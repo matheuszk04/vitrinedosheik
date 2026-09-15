@@ -422,6 +422,7 @@ export function mapPage(site, allPerfumes) {
             ${dots}
           </div>
         </div>
+        <p class="map-hint">${perfumes.length} fragrâncias posicionadas — toque em um ponto para ver qual é.</p>
 
         <aside class="map-readout reveal" data-map-readout>
           <span class="eyebrow eyebrow--bare">Selecione no mapa</span>

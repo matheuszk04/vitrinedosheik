@@ -1444,17 +1444,37 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
   transform: scale(1.25);
   box-shadow: 0 0 0 13px var(--gold-veil);
 }
+/* Com o catálogo cheio, todos os nomes juntos viram sopa de letras.
+   O rótulo aparece sob demanda; o ponto fica sempre. */
 .map-dot span {
   position: absolute;
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
+  padding: 3px 8px;
+  background: var(--ink-2);
+  border: 1px solid var(--line-warm);
   font-family: var(--serif);
   font-size: 14px;
   white-space: nowrap;
-  color: var(--text-soft);
+  color: var(--gold-warm);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
+  pointer-events: none;
 }
-.map-dot.is-on span { color: var(--gold-warm); }
+.map-dot:hover, .map-dot:focus-visible, .map-dot.is-on { z-index: 4; }
+.map-dot:hover span,
+.map-dot:focus-visible span,
+.map-dot.is-on span { opacity: 1; visibility: visible; }
+
+.map-hint {
+  margin: 14px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  text-align: center;
+}
 
 .map-readout { border-top: 1px solid var(--gold-line); padding-top: 22px; }
 .map-readout .eyebrow { margin-bottom: 14px; }

@@ -183,9 +183,11 @@
             "label": "Elegante",
             "match": {
               "personality": [
-                "Delicado",
-                "Versátil",
-                "Luminoso"
+                "Elegante",
+                "Refinado",
+                "Sofisticado",
+                "Clássico",
+                "Macio"
               ],
               "families": [
                 "Floral",
@@ -197,9 +199,11 @@
             "label": "Marcante",
             "match": {
               "personality": [
-                "Intenso",
                 "Marcante",
-                "Magnético"
+                "Intenso",
+                "Denso",
+                "Magnético",
+                "Fumegante"
               ],
               "projection": [
                 4,
@@ -211,10 +215,12 @@
             "label": "Sedutor",
             "match": {
               "personality": [
-                "Quente",
+                "Viciante",
                 "Envolvente",
-                "Magnético",
-                "Noturno"
+                "Quente",
+                "Embriagante",
+                "Noturno",
+                "Magnético"
               ],
               "families": [
                 "Oriental",
@@ -226,9 +232,11 @@
             "label": "Discreto",
             "match": {
               "personality": [
+                "Limpo",
+                "Macio",
                 "Delicado",
-                "Luminoso",
-                "Versátil"
+                "Sóbrio",
+                "Claro"
               ],
               "projection": [
                 1,
@@ -241,8 +249,10 @@
             "match": {
               "personality": [
                 "Noturno",
-                "Magnético",
-                "Intenso"
+                "Denso",
+                "Fumegante",
+                "Mineral",
+                "Magnético"
               ],
               "families": [
                 "Oriental",
@@ -254,11 +264,15 @@
             "label": "Fresco",
             "match": {
               "personality": [
+                "Claro",
                 "Luminoso",
+                "Limpo",
+                "Solar",
                 "Versátil"
               ],
               "families": [
-                "Floral",
+                "Cítrico",
+                "Aromático",
                 "Frutado"
               ]
             }
@@ -375,8 +389,16 @@
             "label": "Fresca",
             "match": {
               "families": [
-                "Floral",
-                "Frutado"
+                "Cítrico",
+                "Aromático"
+              ]
+            }
+          },
+          {
+            "label": "Cítrica",
+            "match": {
+              "families": [
+                "Cítrico"
               ]
             }
           },
@@ -385,7 +407,8 @@
             "match": {
               "families": [
                 "Oriental",
-                "Especiado"
+                "Especiado",
+                "Âmbar"
               ]
             }
           },
@@ -401,8 +424,7 @@
             "label": "Doce",
             "match": {
               "families": [
-                "Gourmand",
-                "Frutado"
+                "Gourmand"
               ]
             }
           },
@@ -427,7 +449,8 @@
             "match": {
               "families": [
                 "Oriental",
-                "Gourmand"
+                "Gourmand",
+                "Âmbar"
               ]
             }
           }
