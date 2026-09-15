@@ -7,8 +7,8 @@ import { readFile, writeFile, mkdir, rm, cp } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { setBase, setGlossary } from "./templates/base.mjs";
-import { home, explorer, perfumePage, mapPage, consultantPage } from "./templates/pages.mjs";
+import { setBase, setGlossary, setCatalog } from "./templates/base.mjs";
+import { home, explorer, perfumePage, mapPage, consultantPage, discoveryPage } from "./templates/pages.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = join(ROOT, "dist");
@@ -61,6 +61,7 @@ async function build() {
   const base = (process.env.BASE_PATH || site.base || "").replace(/\/$/, "");
   setBase(base);
   setGlossary(site.glossary);
+  setCatalog(perfumes);
 
   await rm(DIST, { recursive: true, force: true });
   await mkdir(DIST, { recursive: true });
@@ -68,6 +69,7 @@ async function build() {
   const pages = [
     ["index.html", home(site, perfumes), "/"],
     ["fragrancias/index.html", explorer(site, perfumes), "/fragrancias/"],
+    ["descobrir/index.html", discoveryPage(site, perfumes), "/descobrir/"],
     ["mapa/index.html", mapPage(site, perfumes), "/mapa/"],
     ["consultor/index.html", consultantPage(site), "/consultor/"],
     ...perfumes.map((p) => [

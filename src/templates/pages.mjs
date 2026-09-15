@@ -36,6 +36,29 @@ export function home(site, perfumes) {
     <span class="scroll-hint">Role</span>
   </section>
 
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="paths reveal">
+        <div class="paths-head">
+          <span class="eyebrow">${esc(site.paths.eyebrow)}</span>
+          <h2 class="display">${esc(site.paths.title)}</h2>
+        </div>
+        <div class="paths-grid">
+          <a class="path" href="${u('/fragrancias/')}" data-track="path_chosen" data-track-path="explore">
+            <span class="path-label">${esc(site.paths.explore.label)}</span>
+            <p>${esc(site.paths.explore.body)}</p>
+            <span class="path-cta">${esc(site.paths.explore.cta)} &rarr;</span>
+          </a>
+          <a class="path path--alt" href="${u('/descobrir/')}" data-track="path_chosen" data-track-path="discover">
+            <span class="path-label">${esc(site.paths.discover.label)}</span>
+            <p>${esc(site.paths.discover.body)}</p>
+            <span class="path-cta">${esc(site.paths.discover.cta)} &rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="wrap">
       <div class="editorial reveal">
@@ -296,6 +319,12 @@ export function perfumePage(site, perfume, all) {
     </div>
   </section>` : ""}
 
+  <div class="sticky-cta" data-sticky hidden>
+    <span class="sticky-name">${esc(perfume.name)}${perfume.price != null ? ` · ${money(perfume.price)}` : ""}</span>
+    <a class="btn btn--gold" href="${waHref(site, msg)}" target="_blank" rel="noopener"
+       data-track="whatsapp_clicked_from_product" data-track-perfume="${perfume.slug}" data-track-source="sticky">Conhecer</a>
+  </div>
+
   <section class="closing">
     <div class="wrap">
       <span class="eyebrow eyebrow--center reveal">Ainda em dúvida?</span>
@@ -312,7 +341,8 @@ export function perfumePage(site, perfume, all) {
     description: perfume.tagline
       ? `${perfume.tagline} ${perfume.story || ""}`.trim().slice(0, 155)
       : `${perfume.name} na Vitrine do Sheik. Atendimento individual com um consultor de perfumaria árabe.`,
-    ogImage: main ? `/img/perfumes/${main.base}-960.jpg` : null,
+    // sem foto própria, o preview usa a marca — nunca a foto de outro perfume
+    ogImage: main ? `/img/perfumes/${main.base}-960.jpg` : "/img/logo/logo-384.jpg",
     jsonLd,
     body,
   });
@@ -409,6 +439,80 @@ export function mapPage(site, allPerfumes) {
     path: "/mapa/",
     title: "Mapa olfativo — Vitrine do Sheik",
     description: "Situe cada fragrância entre o fresco e o intenso, o seco e o doce. Uma forma visual de entender do que você gosta.",
+    body,
+  });
+}
+
+
+/* ------------------------------------------------------------- DESCOBRIR */
+export function discoveryPage(site, perfumes) {
+  const d = site.discovery;
+  // só entra na recomendação quem tem com o que ser comparado
+  const pool = perfumes.filter(isEnriched);
+
+  const payload = {
+    questions: d.questions,
+    unsure: d.unsure,
+    perfumes: pool.map((p) => ({
+      slug: p.slug,
+      name: p.name,
+      brand: p.brand || "",
+      tagline: p.tagline || "",
+      href: u(`/perfumes/${p.slug}/`),
+      image: list(p.images)[0] ? u(`/img/perfumes/${list(p.images)[0].base}-480.webp`) : "",
+      price: p.price ?? null,
+      families: list(p.families),
+      personality: list(p.personality),
+      occasions: list(p.occasions),
+      moments: list(p.moments),
+      projection: (p.profile || {}).projection || null,
+    })),
+  };
+
+  const steps = d.questions
+    .map((q, i) => `<section class="step" data-step="q" data-index="${i}" role="group" aria-labelledby="q${i}-t" hidden>
+      <div class="step-count">Pergunta ${i + 1} de ${d.questions.length}</div>
+      <h2 class="step-title display" id="q${i}-t">${esc(q.title)}</h2>
+      <p class="step-help">${esc(q.help)}</p>
+      <div class="step-options">
+        ${q.options.map((o, j) => `<button type="button" class="opt" data-q="${i}" data-o="${j}">${esc(o.label)}</button>`).join("")}
+        <button type="button" class="opt opt--unsure" data-q="${i}" data-o="-1">${esc(d.unsure)}</button>
+      </div>
+      <button type="button" class="step-back" data-back hidden>&larr; Voltar</button>
+    </section>`)
+    .join("");
+
+  const body = `
+  <div class="wrap wrap--narrow">
+    <section class="section" data-discovery data-wa="${waHref(site, "__MSG__")}">
+      <div class="step" data-step="intro">
+        <span class="eyebrow">${esc(d.intro.eyebrow)}</span>
+        <h1 class="display step-title step-title--intro">${esc(d.intro.title)}</h1>
+        <p class="lede">${esc(d.intro.body)}</p>
+        <div class="step-actions">
+          <button type="button" class="btn btn--gold" data-start>${esc(d.intro.cta)}</button>
+          <a class="btn btn--quiet" href="${u('/fragrancias/')}">${esc(d.intro.skip)}</a>
+        </div>
+      </div>
+
+      <div class="progress" data-progress hidden><span></span></div>
+      ${steps}
+
+      <div class="step" data-step="result" hidden>
+        <div data-result></div>
+        <button type="button" class="btn btn--quiet" data-restart>${esc(d.result.restart)}</button>
+      </div>
+    </section>
+  </div>
+
+  <script type="application/json" data-discovery-data>${JSON.stringify(payload)}</script>
+  <script type="application/json" data-discovery-copy>${JSON.stringify(d.result)}</script>`;
+
+  return layout({
+    site,
+    path: "/descobrir/",
+    title: "Descobrir sua fragrância — Vitrine do Sheik",
+    description: "Quatro perguntas, nenhuma técnica. No fim, indicamos por onde começar na perfumaria árabe.",
     body,
   });
 }

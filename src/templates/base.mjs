@@ -40,6 +40,9 @@ export const logoImg = (cls = "", eager = false) => {
 export const abs = (site, path) =>
   site.url ? site.url.replace(/\/$/, "") + path : u(path);
 
+let CATALOG = [];
+export const setCatalog = (items) => { CATALOG = items || []; };
+
 /* Glossário: o site ensina enquanto o cliente navega, sem aula de química. */
 let GLOSSARY = {};
 export const setGlossary = (g) => { GLOSSARY = g || {}; };
@@ -186,15 +189,28 @@ export function priceTag(perfume) {
 const NAV = [
   { href: "/", label: "Início" },
   { href: "/fragrancias/", label: "Fragrâncias" },
+  { href: "/descobrir/", label: "Descobrir" },
   { href: "/mapa/", label: "Mapa olfativo" },
   { href: "/consultor/", label: "Consultor" },
 ];
 
+const GENDER_NAV = [
+  { value: "masculino", label: "Masculinos" },
+  { value: "feminino", label: "Femininos" },
+  { value: "unissex", label: "Unissex" },
+];
+
+const SEARCH_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>`;
+
 function nav(current, site) {
-  const items = NAV.map(
-    (item, i) => `<li><a class="nav-link" href="${u(item.href)}"${item.href === current ? ' aria-current="page"' : ""}>
-      <span class="idx">0${i + 1}</span>${esc(item.label)}</a></li>`
-  ).join("");
+  const items = NAV.map((item, i) => {
+    const sub = item.href === "/fragrancias/"
+      ? `<ul class="nav-sub">${GENDER_NAV.map((g) =>
+          `<li><a href="${u(`/fragrancias/?g=${g.value}`)}">${esc(g.label)}</a></li>`).join("")}</ul>`
+      : "";
+    return `<li><a class="nav-link" href="${u(item.href)}"${item.href === current ? ' aria-current="page"' : ""}>
+      <span class="idx">0${i + 1}</span>${esc(item.label)}</a>${sub}</li>`;
+  }).join("");
   return `<nav class="drawer" id="drawer" aria-label="Navegação principal">
     <button class="drawer-close" data-drawer-close aria-label="Fechar menu">&times;</button>
     <a class="brand" href="${u('/')}">${logoImg("", false)}<span class="brand-name">Vitrine do Sheik</span></a>
@@ -205,6 +221,16 @@ function nav(current, site) {
     </ul>
     <p class="nav-tail">Atendimento individual.<br>Sem carrinho, sem cadastro.</p>
   </nav>`;
+}
+
+function pageKind(path) {
+  if (path === "/") return "home";
+  if (path === "/fragrancias/") return "collection";
+  if (path === "/descobrir/") return "discovery";
+  if (path === "/mapa/") return "map";
+  if (path === "/consultor/") return "consultant";
+  if (path.startsWith("/perfumes/")) return "perfume";
+  return "other";
 }
 
 export function layout({ site, title, description, path, body, jsonLd = null, ogImage = null }) {
@@ -239,16 +265,19 @@ export function layout({ site, title, description, path, body, jsonLd = null, og
 <link rel="stylesheet" href="${u("/assets/main.css")}">
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : ""}
 </head>
-<body>
+<body data-page="${pageKind(path)}">
 <a class="skip" href="#conteudo">Ir para o conteúdo</a>
 <div class="texture" aria-hidden="true"></div>
 <div class="vignette" aria-hidden="true"></div>
 
 <header class="topbar">
   <a class="brand" href="${u('/')}">${logoImg("", true)}<span class="brand-name">Vitrine do Sheik</span></a>
-  <button class="burger" data-drawer-open aria-label="Abrir menu" aria-controls="drawer" aria-expanded="false">
-    <span></span><span></span>
-  </button>
+  <div class="topbar-actions">
+    <button class="icon-btn" data-search-open aria-label="Buscar fragrância">${SEARCH_ICON}</button>
+    <button class="burger" data-drawer-open aria-label="Abrir menu" aria-controls="drawer" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </div>
 </header>
 
 <div class="drawer-scrim" data-drawer-close aria-hidden="true"></div>
@@ -266,6 +295,29 @@ ${nav(path, site)}
   </footer>
 </div>
 
+<div class="search" id="busca" role="dialog" aria-modal="true" aria-label="Buscar fragrância" hidden>
+  <div class="search-scrim" data-search-close></div>
+  <div class="search-panel">
+    <div class="search-field">
+      ${SEARCH_ICON}
+      <input type="search" id="search-input" placeholder="Buscar por nome…" autocomplete="off"
+             spellcheck="false" aria-controls="search-results" aria-describedby="search-help">
+      <button class="search-close" data-search-close aria-label="Fechar busca">&times;</button>
+    </div>
+    <p class="search-help" id="search-help">Digite o nome da fragrância. Erros de digitação não atrapalham.</p>
+    <ul class="search-results" id="search-results" role="listbox"></ul>
+  </div>
+</div>
+
+<script type="application/json" data-search-index>${JSON.stringify(
+  CATALOG.map((p) => ({
+    n: p.name,
+    h: u(`/perfumes/${p.slug}/`),
+    b: p.brand || "",
+    p: p.price ?? null,
+    i: (Array.isArray(p.images) && p.images[0] ? u(`/img/perfumes/${p.images[0].base}-320.webp`) : ""),
+  }))
+)}</script>
 <script src="${u("/assets/app.js")}" defer></script>
 </body>
 </html>`;
