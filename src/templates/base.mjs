@@ -183,14 +183,15 @@ export function card(perfume, { eager = false } = {}) {
 
 export function priceTag(perfume) {
   if (perfume.price == null) return `<span class="card-price muted">Sob consulta</span>`;
-  return `<span class="card-price">${money(perfume.price)}<em>no pix</em></span>`;
+  return `<span class="card-price">${money(perfume.price)}<em>no Pix</em></span>`;
 }
 
+/* O mapa olfativo saiu daqui: é uma experiência secundária, não um caminho de
+   compra. Continua acessível a partir de Fragrâncias. */
 const NAV = [
   { href: "/", label: "Início" },
   { href: "/fragrancias/", label: "Fragrâncias" },
   { href: "/descobrir/", label: "Descobrir" },
-  { href: "/mapa/", label: "Mapa olfativo" },
   { href: "/consultor/", label: "Consultor" },
 ];
 
@@ -217,7 +218,7 @@ function nav(current, site) {
     <ul class="nav-list">${items}
       <li><a class="nav-link" href="${waHref(site, site.whatsapp.greeting)}" target="_blank" rel="noopener"
              data-track="whatsapp_click" data-track-source="nav">
-        <span class="idx">05</span>WhatsApp</a></li>
+        <span class="idx">0${NAV.length + 1}</span>WhatsApp</a></li>
     </ul>
     <p class="nav-tail">Atendimento individual.<br>Sem carrinho, sem cadastro.</p>
   </nav>`;
