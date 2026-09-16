@@ -3,6 +3,10 @@ name: Publicar site
 on:
   push:
     branches: [main]
+  # As coleções sazonais são decididas na hora do build. Sem esta rodada
+  # diária, o Natal só entraria no ar no próximo commit.
+  schedule:
+    - cron: "17 8 * * *"
   workflow_dispatch:
 
 permissions:

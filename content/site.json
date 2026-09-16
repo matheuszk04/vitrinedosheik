@@ -36,6 +36,22 @@
       "eyebrow": "A vitrine",
       "title": "Nossas fragrâncias",
       "all": "Ver todas as {n}"
+    },
+    "rails": {
+      "eyebrow": "A vitrine",
+      "masculinos": {
+        "title": "Para eles",
+        "note": "Masculinos e unissex que funcionam bem neles."
+      },
+      "femininos": {
+        "title": "Para elas",
+        "note": "Femininos e unissex de assinatura mais macia."
+      },
+      "presentes": {
+        "title": "Kits e presentes",
+        "note": "Combinações prontas — ou montadas por você."
+      },
+      "all": "Ver as {n} fragrâncias"
     }
   },
   "consultant": {
@@ -162,21 +178,26 @@
   },
   "discovery": {
     "intro": {
-      "eyebrow": "Descobrir",
-      "title": "Quatro perguntas. Nenhuma técnica.",
-      "body": "Você não precisa saber o que é âmbar para responder. No fim, indicamos por onde começar.",
+      "eyebrow": "Sua assinatura",
+      "title": "Que impressão você quer deixar?",
+      "body": "Quatro perguntas sobre você — nenhuma sobre perfume. No fim, dizemos qual é a sua assinatura e por onde começar.",
       "cta": "Começar",
       "skip": "Prefiro ver a coleção"
     },
     "unsure": "Ainda não sei",
     "questions": [
       {
-        "id": "transmitir",
-        "title": "O que você quer transmitir?",
-        "help": "Pense em como quer ser percebido ao entrar num ambiente.",
+        "id": "impressao",
+        "title": "Quando você entra num ambiente, o que quer que percebam?",
+        "help": "Não pense em perfume. Pense em você.",
+        "recap": "quer deixar uma impressão {a}",
         "options": [
           {
             "label": "Elegante",
+            "signature": {
+              "name": "presença elegante",
+              "body": "Você parece buscar fragrâncias que sejam percebidas sem necessariamente dominar o ambiente."
+            },
             "match": {
               "personality": [
                 "Elegante",
@@ -193,6 +214,10 @@
           },
           {
             "label": "Marcante",
+            "signature": {
+              "name": "presença marcante",
+              "body": "Você quer ser percebido antes de dizer qualquer coisa. Fragrâncias grandes, que ocupam espaço e ficam depois que você sai."
+            },
             "match": {
               "personality": [
                 "Marcante",
@@ -209,6 +234,10 @@
           },
           {
             "label": "Sedutor",
+            "signature": {
+              "name": "presença magnética",
+              "body": "Você busca proximidade, não alcance. Fragrâncias que funcionam melhor a um passo de distância do que do outro lado da sala."
+            },
             "match": {
               "personality": [
                 "Viciante",
@@ -226,6 +255,10 @@
           },
           {
             "label": "Discreto",
+            "signature": {
+              "name": "presença discreta",
+              "body": "Você prefere ser lembrado por quem chegou perto. Fragrâncias que ficam na sua roupa, não no ambiente inteiro."
+            },
             "match": {
               "personality": [
                 "Limpo",
@@ -242,6 +275,10 @@
           },
           {
             "label": "Misterioso",
+            "signature": {
+              "name": "presença enigmática",
+              "body": "Você gosta de não ser decifrado de primeira. Fragrâncias escuras, que mudam de cara conforme as horas passam."
+            },
             "match": {
               "personality": [
                 "Noturno",
@@ -258,6 +295,10 @@
           },
           {
             "label": "Fresco",
+            "signature": {
+              "name": "presença limpa",
+              "body": "Você quer parecer alguém que acabou de sair do banho, a qualquer hora do dia. Fragrâncias claras, sem peso e sem esforço."
+            },
             "match": {
               "personality": [
                 "Claro",
@@ -273,13 +314,13 @@
               ]
             }
           }
-        ],
-        "recap": "quer transmitir algo {a}"
+        ]
       },
       {
-        "id": "quando",
-        "title": "Quando pretende usar?",
-        "help": "Se usar em mais de uma situação, escolha a mais frequente.",
+        "id": "vida",
+        "title": "Em que parte da sua vida ele vai entrar?",
+        "help": "Escolha a situação mais frequente, não a mais especial.",
+        "recap": "pretende usar {a}",
         "options": [
           {
             "label": "No dia a dia",
@@ -332,16 +373,16 @@
               ]
             }
           }
-        ],
-        "recap": "pretende usar {a}"
+        ]
       },
       {
-        "id": "percebido",
-        "title": "Como você prefere ser percebido?",
-        "help": "Isso é projeção: o quanto a fragrância chega em quem está perto.",
+        "id": "distancia",
+        "title": "A que distância você quer ser notado?",
+        "help": "Tem quem goste de ser percebido só de perto. E tem quem queira ser percebido do outro lado da sala.",
+        "recap": "quer ser notado {a}",
         "options": [
           {
-            "label": "Discreto",
+            "label": "Só de perto",
             "match": {
               "projection": [
                 1,
@@ -350,7 +391,7 @@
             }
           },
           {
-            "label": "Equilibrado",
+            "label": "A um passo",
             "match": {
               "projection": [
                 3,
@@ -359,7 +400,7 @@
             }
           },
           {
-            "label": "Presente",
+            "label": "Quando você passa",
             "match": {
               "projection": [
                 4,
@@ -368,7 +409,7 @@
             }
           },
           {
-            "label": "Marcante",
+            "label": "Do outro lado da sala",
             "match": {
               "projection": [
                 5,
@@ -376,13 +417,13 @@
               ]
             }
           }
-        ],
-        "recap": "prefere uma presença {a}"
+        ]
       },
       {
         "id": "sensacao",
         "title": "Que sensação combina mais com você?",
         "help": "Escolha pelo que soa bem, não pelo que você conhece.",
+        "recap": "gosta de sensação {a}",
         "options": [
           {
             "label": "Fresca",
@@ -390,14 +431,6 @@
               "families": [
                 "Cítrico",
                 "Aromático"
-              ]
-            }
-          },
-          {
-            "label": "Cítrica",
-            "match": {
-              "families": [
-                "Cítrico"
               ]
             }
           },
@@ -412,14 +445,6 @@
             }
           },
           {
-            "label": "Amadeirada",
-            "match": {
-              "families": [
-                "Amadeirado"
-              ]
-            }
-          },
-          {
             "label": "Doce",
             "match": {
               "families": [
@@ -428,18 +453,18 @@
             }
           },
           {
-            "label": "Floral",
+            "label": "Amadeirada",
             "match": {
               "families": [
-                "Floral"
+                "Amadeirado"
               ]
             }
           },
           {
-            "label": "Especiada",
+            "label": "Floral",
             "match": {
               "families": [
-                "Especiado"
+                "Floral"
               ]
             }
           },
@@ -453,17 +478,22 @@
               ]
             }
           }
-        ],
-        "recap": "gosta de sensação {a}"
+        ]
       }
     ],
     "result": {
-      "eyebrow": "Começaríamos por aqui",
+      "eyebrow": "Sua assinatura",
+      "line": "Sua assinatura é {assinatura}.",
+      "startHere": "Começaríamos por aqui",
       "otherTitle": "Outras possibilidades",
       "weakTitle": "Não encontramos uma combinação clara",
       "weakBody": "Suas respostas não apontaram para uma fragrância da coleção atual com segurança. Um consultor resolve isso em poucos minutos de conversa.",
       "restart": "Responder de novo",
-      "because": "Você disse que {recap}."
+      "because": "Você disse que {recap}.",
+      "fallback": {
+        "name": "presença própria",
+        "body": "Você deixou as perguntas em aberto, o que também é uma resposta. Nesse caso vale conversar: cinco minutos com um consultor valem mais do que qualquer questionário."
+      }
     }
   }
 }

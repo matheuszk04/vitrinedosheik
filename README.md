@@ -16,7 +16,8 @@ Todo o conteúdo do site vive em dois arquivos. **Você não precisa mexer em c�
 | Arquivo | O que controla |
 |---|---|
 | `content/perfumes.json` | Os perfumes: nome, preço, notas, perfil, textos |
-| `content/site.json` | Marca, WhatsApp, textos da home, mapa olfativo |
+| `content/site.json` | Marca, WhatsApp, textos da home, mapa olfativo, o teste de assinatura |
+| `content/kits.json` | Kits de presente, datas comemorativas e os textos da página Presentear |
 
 Para adicionar um perfume novo:
 
@@ -38,6 +39,65 @@ que ainda falta.
 
 O campo `review` lista o que foi **redigido como rascunho** e espera sua correção.
 Quando você revisar um campo, tire o nome dele dessa lista.
+
+---
+
+## Kits e presentes
+
+A página `/presentes/` reúne as duas formas de dar um perfume de presente:
+
+- **Kits prontos** — combinações de duas ou três fragrâncias, cada uma com a
+  sua página (`/presentes/primeira-vez/`).
+- **Monte seu kit** — a pessoa marca as fragrâncias que quiser e a seleção vira
+  uma mensagem no WhatsApp: *"Olá! Quero montar um kit com: Khamrah + Al Wesal."*
+  Nada é cobrado no site; o valor do conjunto é fechado por você na conversa.
+
+### Como mexer nos kits
+
+Tudo em `content/kits.json`. Um kit é só isto:
+
+```json
+{
+  "slug": "primeira-vez",
+  "name": "Primeira Vez",
+  "audience": "unissex",
+  "concept": "uma frase",
+  "body": "o parágrafo que explica a dupla",
+  "perfumes": ["al-wesal", "khamrah"],
+  "price": null
+}
+```
+
+Os `perfumes` são os `slug` do catálogo real — o nome, a foto e o preço vêm de
+lá, então **nada é digitado duas vezes**. Com `"price": null`, o site mostra a
+soma dos preços no Pix e diz que é a soma. Se você fechar um valor de kit,
+escreva o número em `price` e o site passa a mostrar só ele.
+
+> **Nome, conceito e texto dos seis kits são rascunho meu** — é o que o campo
+> `review` de cada kit registra, e o build avisa no terminal a cada rodada.
+> As fragrâncias dentro deles são reais. Corrija os textos à vontade.
+
+### Datas comemorativas
+
+Cada estação é uma janela de calendário que **se repete todo ano**:
+
+```json
+{ "id": "natal", "label": "Natal", "from": "11-10", "to": "12-26",
+  "kits": ["primeira-vez", "tres-territorios"] }
+```
+
+Dentro da janela, a home ganha uma faixa da data e a página Presentear sobe os
+kits dela para o topo. Fora dela, nada aparece — não fica um Natal esquecido no
+ar em março. Dezembro para janeiro dá a volta sozinho (Ano Novo).
+
+Para ver como uma data vai ficar antes da hora:
+
+```bash
+SEASON=natal node src/build.mjs && node src/serve.mjs
+```
+
+O site é gerado na hora do build, então o GitHub Action roda **uma vez por dia**
+(além de a cada push) só para as datas entrarem e saírem sozinhas.
 
 ---
 
@@ -85,12 +145,14 @@ Dois ajustes quando o domínio final existir:
 content/          os dados — é aqui que o conteúdo mora
   site.json
   perfumes.json
+  kits.json
 assets-src/       fotos originais (fonte da verdade)
 public/           imagens otimizadas e fontes, servidas como estão
 src/
   build.mjs       o gerador: JSON → HTML estático
   serve.mjs       servidor local de preview
-  templates/      o HTML (base.mjs = shell e componentes, pages.mjs = páginas)
+  templates/      o HTML (base.mjs = shell e componentes, pages.mjs = páginas,
+                  kits.mjs = kits e datas comemorativas)
   styles/         main.css = design system, fonts.css = fontes auto-hospedadas
   scripts/app.js  o pouco de JavaScript que roda no navegador
 dist/             o site gerado (não versionado)
@@ -106,9 +168,13 @@ O site atende dois visitantes diferentes pela mesma porta:
   primários de gênero e ocasião à vista; família, estilo e clima recolhidos em
   "Mais filtros". A navegação aceita `/fragrancias/?g=masculino` para campanhas
   que apontam direto para uma categoria.
-- **Não sei por onde começar** (`/descobrir/`) — quatro perguntas, nenhuma técnica,
-  e até três indicações no fim. O resultado explica a escolha com as próprias
-  respostas da pessoa. "Ainda não sei" é resposta válida e não prejudica nada.
+- **Presentear** (`/presentes/`) — kits prontos e "monte o seu". É a porta para
+  quem chega procurando presente, não perfume.
+- **Qual é a sua assinatura?** (`/descobrir/`) — quatro perguntas sobre a pessoa,
+  nenhuma sobre perfume. O resultado nomeia a assinatura dela antes de indicar
+  qualquer produto: *"Sua assinatura é presença elegante."* Depois vem a
+  justificativa nas palavras dela e só então as indicações. "Ainda não sei" é
+  resposta válida — a assinatura sai mesmo assim.
 
 As duas páginas foram deliberadamente separadas: filtrar por *estilo* e responder
 "o que você quer transmitir" são a mesma pergunta, e ter as duas abertas lado a
@@ -135,13 +201,21 @@ o que cada resposta procura, sem tocar em código.
 
 Os eventos já estão instrumentados e empurrados para `window.dataLayer`:
 
-`homepage_view` · `fragrance_collection_view` · `fragrance_view` ·
+**Vitrine:** `homepage_view` · `fragrance_collection_view` · `fragrance_view` ·
 `fragrance_search` · `fragrance_search_result_clicked` · `category_male_clicked` ·
-`category_female_clicked` · `filter_used` · `discovery_started` ·
-`discovery_question_answered` · `discovery_completed` · `discovery_result_clicked` ·
-`olfactive_map_opened` · `olfactive_map_interaction` · `consultant_opened` ·
-`whatsapp_clicked` · `whatsapp_clicked_from_product` ·
-`whatsapp_clicked_from_discovery` · `scroll_depth` · `term_opened`
+`category_female_clicked` · `filter_used` · `rail_scrolled` · `scroll_depth` ·
+`term_opened` · `path_chosen`
+
+**Presentes:** `gift_page_view` · `kit_view` · `kit_clicked` ·
+`kit_from_perfume_clicked` · `season_banner_clicked` · `kit_builder_started` ·
+`kit_perfume_selected` · `kit_perfume_removed` · `kit_cleared` · `kit_submitted`
+
+**Descoberta:** `discovery_started` · `discovery_question_answered` ·
+`discovery_completed` (leva a assinatura junto) · `discovery_result_clicked`
+
+**Conversão:** `whatsapp_clicked` · `whatsapp_clicked_from_product` ·
+`whatsapp_clicked_from_discovery` · `whatsapp_clicked_from_kit` ·
+`olfactive_map_opened` · `olfactive_map_interaction` · `consultant_opened`
 
 Basta instalar GA4, GTM ou Meta Pixel — nada nos templates precisa mudar.
 Para conferir no navegador: `window.__vdsDebug = true` e clique pelo site.
@@ -159,6 +233,13 @@ campanha para o vendedor.
 ---
 
 ## Pendências
+
+### Textos de kit que esperam sua correção
+
+Os seis kits têm nome, conceito e descrição redigidos por mim como rascunho —
+as fragrâncias dentro deles são reais e os preços são a soma dos preços reais.
+Se o nome não combinar com a loja ou a combinação não fizer sentido comercial,
+troque em `content/kits.json`: é só texto.
 
 ### Dados que dependem de você
 

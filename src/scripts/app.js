@@ -52,6 +52,8 @@
     collection: "fragrance_collection_view",
     perfume: "fragrance_view",
     discovery: "discovery_page_view",
+    gifts: "gift_page_view",
+    kit: "kit_view",
     map: "olfactive_map_opened",
     consultant: "consultant_opened",
   };
@@ -118,6 +120,39 @@
     }, { rootMargin: "0px 0px -8% 0px", threshold: 0.1 });
     revealEls.forEach(function (el) { revealObs.observe(el); });
   }
+
+  /* =============================================================== TRILHOS
+     Rolagem lateral é do CSS. Aqui só as setas do desktop e a medição de
+     quem realmente chega ao terceiro trilho. */
+  document.querySelectorAll("[data-rail]").forEach(function (railEl) {
+    var head = railEl.previousElementSibling;
+    var prev = head && head.querySelector("[data-rail-prev]");
+    var next = head && head.querySelector("[data-rail-next]");
+    var trackEl = railEl.firstElementChild;
+    var logged = false;
+
+    var step = function () {
+      var first = trackEl && trackEl.firstElementChild;
+      return first ? first.getBoundingClientRect().width + 26 : railEl.clientWidth * 0.8;
+    };
+    var nudge = function (dir) {
+      railEl.scrollBy({ left: dir * step(), behavior: reduceMotion ? "auto" : "smooth" });
+    };
+    if (prev) prev.addEventListener("click", function () { nudge(-1); });
+    if (next) next.addEventListener("click", function () { nudge(1); });
+
+    var sync = function () {
+      var max = railEl.scrollWidth - railEl.clientWidth - 2;
+      if (prev) prev.disabled = railEl.scrollLeft <= 2;
+      if (next) next.disabled = railEl.scrollLeft >= max;
+      if (!logged && railEl.scrollLeft > 24) {
+        logged = true;
+        track("rail_scrolled", { rail: railEl.dataset.rail });
+      }
+    };
+    railEl.addEventListener("scroll", sync, { passive: true });
+    sync();
+  });
 
   /* =============================================================== FILTROS */
   var grid = document.querySelector("[data-grid]");
@@ -431,6 +466,109 @@
     }, { threshold: 0 }).observe(anchor);
   })();
 
+  /* ========================================================= MONTE SEU KIT
+     A seleção não é um carrinho: nada é cobrado aqui. Ela só existe para
+     virar uma frase em português no WhatsApp, onde uma pessoa continua. */
+  (function () {
+    var root = document.querySelector("[data-builder]");
+    if (!root) return;
+    var bar = document.querySelector("[data-kitbar]");
+    var go = bar && bar.querySelector("[data-kitbar-go]");
+    var countEl = bar && bar.querySelector("[data-kitbar-count]");
+    var clearEl = bar && bar.querySelector("[data-kitbar-clear]");
+    var buttons = Array.prototype.slice.call(root.querySelectorAll("[data-pick]"));
+    if (!bar || !go) return;
+
+    var KEY = "vds_kit";
+    var started = false;
+    var picks = [];
+
+    function save() {
+      try { sessionStorage.setItem(KEY, JSON.stringify(picks)); } catch (e) {}
+    }
+    function load() {
+      try { return JSON.parse(sessionStorage.getItem(KEY) || "[]"); } catch (e) { return []; }
+    }
+
+    /* "Khamrah + Al Wesal + Asad Elixir" — a mensagem tem que ser legível
+       para o vendedor sem nenhuma decodificação. */
+    function sentence() {
+      var names = picks.map(function (x) { return x.name; });
+      return (root.dataset.template || "Olá! Quero montar um kit com: {itens}.")
+        .replace("{itens}", names.join(" + "));
+    }
+
+    function render() {
+      buttons.forEach(function (btn) {
+        var on = picks.some(function (x) { return x.slug === btn.dataset.pick; });
+        btn.setAttribute("aria-pressed", String(on));
+        btn.classList.toggle("is-on", on);
+      });
+      bar.hidden = picks.length === 0;
+      document.body.classList.toggle("has-kitbar", picks.length > 0);
+      if (countEl) {
+        countEl.textContent = picks.length === 1 ? "1 fragrância" : picks.length + " fragrâncias";
+      }
+      document.documentElement.style.setProperty("--kitbar-h", bar.offsetHeight + "px");
+      go.href = root.dataset.wa.replace("__MSG__", encodeURIComponent(sentence()));
+      go.dataset.trackKit = picks.map(function (x) { return x.slug; }).join(",");
+    }
+
+    function toggle(slug, name, quiet) {
+      var i = -1;
+      picks.forEach(function (x, k) { if (x.slug === slug) i = k; });
+      if (i === -1) {
+        if (!started) { started = true; track("kit_builder_started", { from: "picker" }); }
+        picks.push({ slug: slug, name: name });
+        if (!quiet) track("kit_perfume_selected", { perfume: slug, size: picks.length });
+      } else {
+        picks.splice(i, 1);
+        if (!quiet) track("kit_perfume_removed", { perfume: slug, size: picks.length });
+      }
+      save();
+      render();
+    }
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        toggle(btn.dataset.pick, btn.dataset.pickName);
+      });
+    });
+
+    if (clearEl) {
+      clearEl.addEventListener("click", function () {
+        picks = [];
+        save();
+        render();
+        track("kit_cleared", {});
+      });
+    }
+
+    go.addEventListener("click", function () {
+      track("kit_submitted", {
+        size: picks.length,
+        perfumes: picks.map(function (x) { return x.slug; }).join(","),
+      });
+    });
+
+    /* a seleção sobrevive à navegação, e a página da fragrância manda para cá
+       com ?add=slug já marcado */
+    picks = load().filter(function (x) {
+      return buttons.some(function (b) { return b.dataset.pick === x.slug; });
+    });
+    var add = new URLSearchParams(location.search).get("add");
+    if (add) {
+      var target = buttons.filter(function (b) { return b.dataset.pick === add; })[0];
+      if (target && !picks.some(function (x) { return x.slug === add; })) {
+        started = true;
+        track("kit_builder_started", { from: "perfume" });
+        toggle(add, target.dataset.pickName, true);
+        track("kit_perfume_selected", { perfume: add, size: picks.length });
+      }
+    }
+    render();
+  })();
+
   /* ============================================================ DESCOBRIR */
   (function () {
     var root = document.querySelector("[data-discovery]");
@@ -493,8 +631,18 @@
         (p.tagline ? "<em>" + p.tagline + "</em>" : "") + price + "</span></a>";
     }
 
+    /* A assinatura é uma leitura da pessoa, não do catálogo: sai direto da
+       resposta que ela deu sobre a impressão que quer deixar. Por isso ela
+       existe mesmo quando nenhuma fragrância da coleção combina. */
+    function signature() {
+      for (var i = 0; i < answers.length; i++) {
+        if (answers[i] && answers[i].signature) return answers[i].signature;
+      }
+      return copy.fallback;
+    }
+
     /* A justificativa sai das respostas, não do jargão: "Você disse que quer
-       transmitir algo sedutor, pretende usar à noite e gosta de sensação quente." */
+       deixar uma impressão sedutora, pretende usar à noite e gosta de sensação quente." */
     function recapSentence() {
       var parts = [];
       answers.forEach(function (ans, i) {
@@ -516,16 +664,22 @@
 
       var box = root.querySelector("[data-result]");
       var chosen = ranked.length ? ranked[0].p : null;
+      var sig = signature();
+
+      var head =
+        '<span class="eyebrow">' + copy.eyebrow + "</span>" +
+        '<h2 class="display step-title">' + copy.line.replace("{assinatura}", sig.name) + "</h2>" +
+        '<p class="lede">' + sig.body + "</p>" +
+        '<p class="rec-recap">' + recapSentence() + "</p>";
 
       if (!chosen) {
-        box.innerHTML = '<span class="eyebrow">' + copy.weakTitle + "</span>" +
-          '<p class="lede">' + copy.weakBody + "</p>";
+        box.innerHTML = head +
+          '<h3 class="rec-other">' + copy.weakTitle + "</h3>" +
+          '<p class="rec-note">' + copy.weakBody + "</p>";
       } else {
         var rest = ranked.slice(1, 3);
-        box.innerHTML =
-          '<span class="eyebrow">' + copy.eyebrow + "</span>" +
-          '<h2 class="display step-title">' + chosen.name + "</h2>" +
-          '<p class="lede">' + recapSentence() + "</p>" +
+        box.innerHTML = head +
+          '<h3 class="rec-other">' + copy.startHere + "</h3>" +
           cardFor(chosen, true) +
           (rest.length
             ? '<h3 class="rec-other">' + copy.otherTitle + "</h3>" +
@@ -539,8 +693,8 @@
       /* O caminho percorrido entra na conversa em linguagem natural: o vendedor
          sabe que veio da descoberta sem o cliente precisar enviar código nenhum. */
       var message = chosen
-        ? "Olá! Fiz a descoberta de fragrâncias no site e gostei da indicação do " + chosen.name + ". Gostaria de saber mais."
-        : "Olá! Fiz a descoberta de fragrâncias no site e queria ajuda para escolher.";
+        ? "Olá! Fiz o teste no site, minha assinatura deu " + sig.name + " e a indicação foi o " + chosen.name + ". Gostaria de saber mais."
+        : "Olá! Fiz o teste no site, minha assinatura deu " + sig.name + ", mas não fechou com nenhuma fragrância. Queria ajuda para escolher.";
 
       var wa = document.createElement("a");
       wa.className = "btn btn--gold rec-cta";
@@ -554,6 +708,7 @@
 
       show("result");
       track("discovery_completed", {
+        signature: sig.name,
         recommended: chosen ? chosen.slug : "nenhum",
         answered: answers.filter(Boolean).length,
       });

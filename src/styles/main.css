@@ -664,12 +664,15 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
 }
 
 .btn--quiet {
+  position: relative;
   padding: 0;
   min-height: 0;
   color: var(--text-soft);
   border-bottom: 1px solid var(--gold-line);
   padding-bottom: 6px;
 }
+/* o desenho continua sendo um link sublinhado; o dedo ganha 44px mesmo assim */
+.btn--quiet::after { content: ""; position: absolute; inset: -11px -10px -9px; }
 .btn--quiet:hover { color: var(--gold-warm); }
 
 .btn svg { width: 15px; height: 15px; flex: none; }
@@ -1540,12 +1543,18 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
 /* --------------------------------------------------------------------------
    REVELAÇÃO NO SCROLL — transform/opacity apenas
    -------------------------------------------------------------------------- */
-.reveal {
+/* A revelação só existe quando há JavaScript para desfazê-la. Sem o .js no
+   <html>, o conteúdo nasce visível em vez de ficar invisível para sempre. */
+.js .reveal {
   opacity: 0;
   transform: translateY(16px);
   transition: opacity 0.85s var(--ease), transform 0.85s var(--ease);
 }
-.reveal.is-in { opacity: 1; transform: none; }
+.js .reveal.is-in { opacity: 1; transform: none; }
+
+/* Dentro do trilho não há revelação: o card que está fora da borda direita
+   nunca cruzou a tela, e apareceria apagado quando a pessoa rola de lado. */
+.js .rail-track .reveal { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -1553,5 +1562,295 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
-  .reveal { opacity: 1; transform: none; }
+  .js .reveal { opacity: 1; transform: none; }
 }
+
+/* --------------------------------------------------------------------------
+   TRILHOS — coleção na horizontal
+   Uma grade com dezenove cards vira prateleira de marketplace. O trilho
+   mantém o card grande, mostra o próximo pela metade e convida a rolar.
+   -------------------------------------------------------------------------- */
+.section--rail { padding-block: 60px; }
+.section--rail + .section--rail { border-top: none; padding-top: 0; }
+/* logo abaixo da entrada o trilho sobe: quem veio de anúncio precisa ver
+   perfume ainda na primeira tela do celular */
+.entrance + .section--rail { padding-top: 28px; }
+
+.rail-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.rail-head h2 { margin: 12px 0 0; font-size: clamp(25px, 4vw, 36px); }
+.rail-note {
+  margin: 10px 0 0;
+  max-width: 44ch;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--text-dim);
+}
+.rail-tools { display: flex; align-items: center; gap: 22px; }
+
+.rail-arrows { display: none; gap: 8px; }
+@media (min-width: 900px) { .rail-arrows { display: flex; } }
+.rail-arrow {
+  width: 38px; height: 38px;
+  border: 1px solid var(--line);
+  color: var(--text-soft);
+  font-size: 14px;
+  transition: all 0.25s;
+}
+.rail-arrow:hover:not(:disabled) { border-color: var(--gold-line); color: var(--gold-warm); }
+.rail-arrow:disabled { opacity: 0.25; cursor: default; }
+
+/* o primeiro card alinha com o conteúdo; os últimos sangram na borda */
+.rail {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  padding-inline: max(22px, calc((100% - 1080px) / 2 + 22px));
+  padding-bottom: 6px;
+}
+.rail::-webkit-scrollbar { display: none; }
+.rail-track { display: flex; gap: 26px; width: max-content; }
+.rail-track > * { scroll-snap-align: start; }
+.rail-track > .card { width: 62vw; max-width: 248px; flex: none; }
+@media (min-width: 620px) { .rail-track > .card { width: 236px; } }
+
+/* --------------------------------------------------------------------------
+   KITS — outro objeto, de propósito
+   O card do kit é horizontal e mostra as peças. Se fosse igual ao card de
+   perfume, os três trilhos da home virariam a mesma prateleira repetida.
+   -------------------------------------------------------------------------- */
+.kit-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
+}
+.rail-track > .kit-card { width: 84vw; max-width: 360px; flex: none; }
+@media (min-width: 620px) { .rail-track > .kit-card { width: 360px; } }
+
+.kit-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: linear-gradient(160deg, rgba(201, 164, 92, 0.05), transparent 58%), var(--ink-2);
+  transition: border-color 0.35s var(--ease);
+}
+.kit-card:hover, .kit-card:focus-visible { border-color: var(--gold-line); }
+
+.kit-stack { display: flex; }
+.kit-chip {
+  width: 58px;
+  aspect-ratio: 3 / 4;
+  flex: none;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid rgba(5, 5, 5, 0.9);
+  display: grid;
+  place-items: center;
+  font-family: var(--serif);
+  font-size: 24px;
+  color: var(--gold-deep);
+}
+.kit-chip + .kit-chip { margin-left: -14px; }
+.kit-chip img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.85); }
+.kit-chip--empty {
+  background:
+    radial-gradient(circle at 50% 38%, rgba(201, 164, 92, 0.08), transparent 62%),
+    var(--surface);
+}
+
+.kit-head { display: flex; flex-direction: column; gap: 7px; }
+.kit-audience {
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.kit-name { font-family: var(--serif); font-weight: 400; font-size: 25px; line-height: 1.15; }
+.kit-concept { font-size: 13.5px; line-height: 1.65; color: var(--text-soft); }
+
+.kit-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.kit-price { font-family: var(--serif); font-size: 19px; color: var(--gold-warm); }
+.kit-price em {
+  display: block;
+  font-style: normal;
+  font-family: var(--sans);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+.kit-price.muted { color: var(--text-dim); }
+
+/* --------------------------------------------------------------------------
+   PÁGINA PRESENTEAR E PÁGINA DO KIT
+   -------------------------------------------------------------------------- */
+.gifts-title { font-size: clamp(30px, 5.6vw, 50px); margin: 16px 0 0; max-width: 20ch; }
+.gifts-lede { max-width: 56ch; margin: 20px 0 0; color: var(--text-soft); line-height: 1.85; }
+
+.season {
+  padding-block: 54px;
+  border-block: 1px solid var(--line-warm);
+  background:
+    radial-gradient(120% 140% at 12% 0%, rgba(201, 164, 92, 0.09), transparent 62%),
+    var(--ink-2);
+}
+.season--page { margin-top: 10px; }
+.season-title { font-size: clamp(26px, 4.6vw, 40px); margin: 14px 0 0; max-width: 20ch; }
+.season-body { max-width: 52ch; margin: 16px 0 26px; color: var(--text-soft); line-height: 1.8; }
+.season .kit-grid { margin-top: 30px; }
+
+.kit-pieces-title { margin-top: 46px; }
+.kit-pieces {
+  display: grid;
+  gap: 24px 22px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  margin-top: 22px;
+}
+.kit-detail { max-width: 58ch; margin-top: 40px; }
+.kit-detail p { margin: 0; color: var(--text-soft); line-height: 1.9; }
+.kit-detail + .convert { margin-top: 36px; }
+
+/* --------------------------------------------------------------------------
+   MONTE SEU KIT — lista de seleção, não carrinho
+   -------------------------------------------------------------------------- */
+.picker {
+  list-style: none;
+  margin: 30px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+@media (min-width: 720px) { .picker { grid-template-columns: 1fr 1fr; } }
+
+.pick {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px 10px 10px;
+  border: 1px solid var(--line);
+  text-align: left;
+  transition: border-color 0.25s, background 0.25s;
+}
+.pick:hover { border-color: var(--gold-line); }
+.pick.is-on { border-color: var(--gold-line); background: rgba(201, 164, 92, 0.07); }
+
+.pick-frame {
+  width: 44px;
+  aspect-ratio: 3 / 4;
+  flex: none;
+  overflow: hidden;
+  background: var(--surface);
+  display: grid;
+  place-items: center;
+}
+.pick-frame img { width: 100%; height: 100%; object-fit: cover; }
+.pick-mark-letter { font-family: var(--serif); font-size: 20px; color: var(--gold-deep); }
+
+.pick-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.pick-body strong { font-family: var(--serif); font-weight: 400; font-size: 18px; }
+.pick-body em {
+  font-style: normal;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.pick-price { font-family: var(--serif); font-size: 15px; color: var(--gold-warm); flex: none; }
+.pick-price.muted { font-size: 11px; color: var(--text-dim); }
+
+/* o tique é a única confirmação — sem contadores nem badges piscando */
+.pick-tick {
+  width: 20px; height: 20px;
+  flex: none;
+  border: 1px solid var(--line-warm);
+  border-radius: 50%;
+  position: relative;
+}
+.pick.is-on .pick-tick { background: var(--gold); border-color: var(--gold); }
+.pick.is-on .pick-tick::after {
+  content: "";
+  position: absolute;
+  left: 6px; top: 3px;
+  width: 5px; height: 9px;
+  border: solid #12100b;
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(42deg);
+}
+
+.builder-note { margin: 22px 0 0; font-size: 13px; color: var(--text-dim); line-height: 1.75; }
+
+.kitbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 36;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px calc(12px + var(--pad-bottom));
+  background: rgba(8, 8, 8, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line-warm);
+}
+.kitbar-count {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--text-soft);
+  flex: 1;
+  min-width: 0;
+  /* uma linha sempre: a barra crescer no celular empurra o rodapé para baixo
+     dela e come área de toque */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kitbar-clear {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.kitbar-clear:hover { color: var(--gold-warm); }
+.kitbar .btn { min-height: 44px; padding: 0 20px; flex: none; }
+/* No celular estreito o botão não cabe ao lado do resumo sem cortar palavra:
+   duas linhas, com o botão inteiro na largura toda. */
+@media (max-width: 460px) {
+  .kitbar { flex-wrap: wrap; gap: 8px 14px; padding-inline: 16px; }
+  .kitbar-count { font-size: 15px; }
+  .kitbar .btn { flex: 1 0 100%; }
+}
+/* com a barra no ar, o fim da página não fica escondido atrás dela — a altura
+   é medida no navegador, porque ela muda com a área segura do aparelho */
+body.has-kitbar .foot { padding-bottom: calc(28px + var(--kitbar-h, 72px)); }
+
+/* entrada discreta para o kit, sem competir com o botão principal */
+.convert-aside {
+  display: inline-block;
+  margin-top: 18px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--line);
+}
+.convert-aside:hover { color: var(--gold-warm); border-bottom-color: var(--gold-line); }
+
+/* a justificativa do quiz, agora abaixo da assinatura */
+.rec-recap { margin: 18px 0 0; font-size: 13.5px; color: var(--text-dim); line-height: 1.8; }

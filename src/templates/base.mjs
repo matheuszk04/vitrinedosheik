@@ -181,6 +181,34 @@ export function card(perfume, { eager = false } = {}) {
   </a>`;
 }
 
+/* Trilho horizontal: cabe mais coleção na primeira tela sem virar prateleira
+   de marketplace — o card continua grande e a rolagem é lateral, não infinita.
+   Sem biblioteca: scroll-snap no CSS, as setas do desktop são um extra. */
+export function rail({ id, eyebrow, title, note, link, items }) {
+  if (!items.length) return "";
+  return `<section class="section section--rail">
+    <div class="wrap">
+      <div class="rail-head reveal">
+        <div>
+          ${eyebrow ? `<span class="eyebrow">${esc(eyebrow)}</span>` : ""}
+          <h2 class="display">${esc(title)}</h2>
+          ${note ? `<p class="rail-note">${esc(note)}</p>` : ""}
+        </div>
+        <div class="rail-tools">
+          ${link ? `<a class="btn btn--quiet" href="${link.href}">${esc(link.label)}</a>` : ""}
+          <div class="rail-arrows" aria-hidden="true">
+            <button class="rail-arrow" data-rail-prev tabindex="-1">&larr;</button>
+            <button class="rail-arrow" data-rail-next tabindex="-1">&rarr;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rail" data-rail="${esc(id)}" role="group" aria-label="${esc(title)}">
+      <div class="rail-track">${items.join("")}</div>
+    </div>
+  </section>`;
+}
+
 export function priceTag(perfume) {
   if (perfume.price == null) return `<span class="card-price muted">Sob consulta</span>`;
   return `<span class="card-price">${money(perfume.price)}<em>no Pix</em></span>`;
@@ -191,6 +219,7 @@ export function priceTag(perfume) {
 const NAV = [
   { href: "/", label: "Início" },
   { href: "/fragrancias/", label: "Fragrâncias" },
+  { href: "/presentes/", label: "Presentear" },
   { href: "/descobrir/", label: "Descobrir" },
   { href: "/consultor/", label: "Consultor" },
 ];
@@ -230,6 +259,8 @@ function pageKind(path) {
   if (path === "/descobrir/") return "discovery";
   if (path === "/mapa/") return "map";
   if (path === "/consultor/") return "consultant";
+  if (path === "/presentes/") return "gifts";
+  if (path.startsWith("/presentes/")) return "kit";
   if (path.startsWith("/perfumes/")) return "perfume";
   return "other";
 }
@@ -264,6 +295,7 @@ export function layout({ site, title, description, path, body, jsonLd = null, og
 <link rel="preload" href="${u("/fonts/CormorantGaramond-300-latin.woff2")}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${u("/fonts/Inter-300-latin.woff2")}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${u("/assets/main.css")}">
+<script>document.documentElement.classList.add("js")</script>
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : ""}
 </head>
 <body data-page="${pageKind(path)}">

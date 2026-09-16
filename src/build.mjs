@@ -8,7 +8,9 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { setBase, setGlossary, setCatalog } from "./templates/base.mjs";
-import { home, explorer, perfumePage, mapPage, consultantPage, discoveryPage } from "./templates/pages.mjs";
+import { home, explorer, perfumePage, mapPage, consultantPage, discoveryPage,
+         giftsPage, kitPage } from "./templates/pages.mjs";
+import { activeSeason, resolveKit } from "./templates/kits.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = join(ROOT, "dist");
@@ -29,6 +31,24 @@ function sitemap(site, paths) {
     .map((p) => `  <url><loc>${base}${p}</loc></url>`)
     .join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
+}
+
+/** Kits: os perfumes são reais, os textos são rascunho meu. O terminal
+    lembra disso a cada build, e diz qual estação está no ar hoje. */
+function reportKits(kitsFile, perfumes) {
+  const season = activeSeason(kitsFile.seasons);
+  console.log(`\n· estação de hoje: ${season ? season.label : "nenhuma (fora de janela)"}`);
+
+  const semPreco = kitsFile.kits
+    .map((k) => resolveKit(k, perfumes))
+    .filter((k) => k.total == null)
+    .map((k) => k.name);
+  if (semPreco.length) console.log(`⚠ kits sem preço calculável: ${semPreco.join(", ")}`);
+
+  const rascunho = kitsFile.kits.filter((k) => (k.review || []).length).length;
+  if (rascunho) {
+    console.log(`⚠ ${rascunho} kits com nome e texto redigidos como rascunho — os perfumes dentro deles são reais.`);
+  }
 }
 
 /** Avisa no terminal sobre campos que ainda dependem de revisão do dono da loja. */
@@ -55,7 +75,11 @@ function reportPending(perfumes) {
 }
 
 async function build() {
-  const [site, perfumes] = await Promise.all([readJson("content/site.json"), readJson("content/perfumes.json")]);
+  const [site, perfumes, kitsFile] = await Promise.all([
+    readJson("content/site.json"),
+    readJson("content/perfumes.json"),
+    readJson("content/kits.json"),
+  ]);
 
   // BASE_PATH permite publicar num subcaminho (ex.: GitHub Pages de projeto)
   const base = (process.env.BASE_PATH || site.base || "").replace(/\/$/, "");
@@ -67,11 +91,16 @@ async function build() {
   await mkdir(DIST, { recursive: true });
 
   const pages = [
-    ["index.html", home(site, perfumes), "/"],
+    ["index.html", home(site, perfumes, kitsFile), "/"],
     ["fragrancias/index.html", explorer(site, perfumes), "/fragrancias/"],
+    ["presentes/index.html", giftsPage(site, perfumes, kitsFile), "/presentes/"],
     ["descobrir/index.html", discoveryPage(site, perfumes), "/descobrir/"],
     ["mapa/index.html", mapPage(site, perfumes), "/mapa/"],
     ["consultor/index.html", consultantPage(site), "/consultor/"],
+    ...kitsFile.kits.map((k) => {
+      const kit = resolveKit(k, perfumes);
+      return [`presentes/${kit.slug}/index.html`, kitPage(site, kit, perfumes, kitsFile), `/presentes/${kit.slug}/`];
+    }),
     ...perfumes.map((p) => [
       `perfumes/${p.slug}/index.html`,
       perfumePage(site, p, perfumes),
@@ -114,6 +143,7 @@ async function build() {
     console.log("  gerar sitemap.xml e para os previews de link do WhatsApp funcionarem.");
   }
   reportPending(perfumes);
+  reportKits(kitsFile, perfumes);
 }
 
 build().catch((err) => {

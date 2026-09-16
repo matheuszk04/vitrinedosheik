@@ -1,5 +1,6 @@
-import { u, abs, esc, money, picture, waHref, layout, card, accords, meters, timeline,
+import { u, abs, esc, money, picture, waHref, layout, card, rail, accords, meters, timeline,
          list, isEnriched, inStock, term, WHATS_ICON } from "./base.mjs";
+import { activeSeason, resolveKit, kitCard, audienceLabel } from "./kits.mjs";
 
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -21,14 +22,40 @@ const btnWhats = (href, label, source, perfume = "") =>
       data-track="whatsapp_click" data-track-source="${source}"${perfume ? ` data-track-perfume="${esc(perfume)}"` : ""}>${WHATS_ICON}${esc(label)}</a>`;
 
 /* ------------------------------------------------------------------ HOME */
-export function home(site, perfumes) {
-  const { entrance, universe, collection, closing } = site.home;
+
+/* Um perfume unissex pertence honestamente aos dois trilhos, mas entra depois
+   dos que são daquele gênero. Foto na frente: é a foto que vende. */
+function railItems(perfumes, gender, limit = 8) {
+  const rank = (p) => (p.gender === gender ? 0 : 1) * 10 + (list(p.images).length ? 0 : 1);
+  return perfumes
+    .filter((p) => p.gender === gender || p.gender === "unissex")
+    .sort((a, b) => rank(a) - rank(b))
+    .slice(0, limit);
+}
+
+/** Faixa da estação: só aparece dentro da janela de calendário dela. */
+function seasonBand(season, kits) {
+  if (!season) return "";
+  return `<section class="season reveal">
+    <div class="wrap">
+      <span class="eyebrow">${esc(season.label)}</span>
+      <h2 class="display season-title">${esc(season.title)}</h2>
+      <p class="season-body">${esc(season.body)}</p>
+      <a class="btn btn--ghost" href="${u("/presentes/")}"
+         data-track="season_banner_clicked" data-track-season="${esc(season.id)}">Ver a seleção${kits.length ? ` de ${season.label}` : ""}</a>
+    </div>
+  </section>`;
+}
+
+export function home(site, perfumes, kitsFile) {
+  const { entrance, universe, rails, closing } = site.home;
   const stages = site.pyramidExplainer.stages;
 
-  /* Quem tem foto vem primeiro: é a foto que vende na primeira tela. */
-  const featured = [...perfumes]
-    .sort((a, b) => list(b.images).length - list(a.images).length)
-    .slice(0, 6);
+  const season = activeSeason(kitsFile.seasons);
+  const allKits = kitsFile.kits.map((k) => resolveKit(k, perfumes));
+  /* Na estação, os kits dela vêm primeiro — o resto da vitrine continua ali. */
+  const seasonKits = season ? allKits.filter((k) => list(season.kits).includes(k.slug)) : [];
+  const homeKits = [...seasonKits, ...allKits.filter((k) => !seasonKits.includes(k))].slice(0, 6);
 
   const body = `
   <section class="entrance">
@@ -43,18 +70,32 @@ export function home(site, perfumes) {
     </div>
   </section>
 
-  <section class="section section--tight">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div>
-          <span class="eyebrow">${esc(collection.eyebrow)}</span>
-          <h2 class="display">${esc(collection.title)}</h2>
-        </div>
-        <a class="btn btn--quiet" href="${u('/fragrancias/')}">${esc(collection.all.replace("{n}", perfumes.length))}</a>
-      </div>
-      <div class="grid">${featured.map((p, i) => card(p, { eager: i < 2 })).join("")}</div>
-    </div>
-  </section>
+  ${rail({
+    id: "masculinos",
+    eyebrow: rails.eyebrow,
+    title: rails.masculinos.title,
+    note: rails.masculinos.note,
+    link: { href: u("/fragrancias/?g=masculino"), label: "Ver todos" },
+    items: railItems(perfumes, "masculino").map((p, i) => card(p, { eager: i < 2 })),
+  })}
+
+  ${rail({
+    id: "femininos",
+    title: rails.femininos.title,
+    note: rails.femininos.note,
+    link: { href: u("/fragrancias/?g=feminino"), label: "Ver todos" },
+    items: railItems(perfumes, "feminino").map((p) => card(p)),
+  })}
+
+  ${seasonBand(season, seasonKits)}
+
+  ${rail({
+    id: "presentes",
+    title: rails.presentes.title,
+    note: rails.presentes.note,
+    link: { href: u("/presentes/"), label: "Presentear" },
+    items: homeKits.map((k) => kitCard(k)),
+  })}
 
   <section class="section">
     <div class="wrap">
@@ -62,6 +103,7 @@ export function home(site, perfumes) {
         <span class="eyebrow">${esc(universe.eyebrow)}</span>
         <h2 class="display">${esc(universe.title)}</h2>
         ${universe.body.map((t) => `<p>${esc(t)}</p>`).join("")}
+        <a class="btn btn--quiet" href="${u('/fragrancias/')}">${esc(rails.all.replace("{n}", perfumes.length))}</a>
       </div>
     </div>
   </section>
@@ -74,11 +116,11 @@ export function home(site, perfumes) {
         <p>${esc(site.pyramidExplainer.body)}</p>
       </div>
       <div class="stages reveal">
-        ${stages.map((s, i) => `<article class="stage">
+        ${stages.map((st, i) => `<article class="stage">
           <span class="stage-num">0${i + 1}</span>
-          <div class="stage-when">${esc(s.time)}</div>
-          <h3>${esc(s.label)}</h3>
-          <p>${esc(s.body)}</p>
+          <div class="stage-when">${esc(st.time)}</div>
+          <h3>${esc(st.label)}</h3>
+          <p>${esc(st.body)}</p>
         </article>`).join("")}
       </div>
     </div>
@@ -176,6 +218,7 @@ export function explorer(site, perfumes) {
 
       <div class="quiet-help reveal">
         <p>Não sabe qual escolher? <a href="${u('/descobrir/')}" data-track="path_chosen" data-track-path="discover_from_collection">Responda quatro perguntas</a> e indicamos por onde começar.</p>
+        <p>É para presentear? <a href="${u('/presentes/')}" data-track="path_chosen" data-track-path="gifts_from_collection">Veja os kits</a> ou monte um com as fragrâncias que quiser.</p>
         <p class="muted">Prefere explorar pelo cheiro? <a href="${u('/mapa/')}">Veja o mapa olfativo</a>.</p>
         ${semFoto ? `<p class="muted">${semFoto} fragrâncias ainda estão sem foto no site. O consultor manda fotos reais por mensagem.</p>` : ""}
       </div>
@@ -269,6 +312,8 @@ export function perfumePage(site, perfume, all) {
     <p class="convert-note">${enriched
       ? "Atendimento individual com um consultor.<br>Sem carrinho, sem cadastro."
       : "Ainda não publicamos a ficha completa desta fragrância.<br>O consultor conta tudo sobre ela por mensagem."}</p>
+    <a class="convert-aside" href="${u(`/presentes/?add=${perfume.slug}#montar`)}"
+       data-track="kit_from_perfume_clicked" data-track-perfume="${perfume.slug}">Montar um kit com esta fragrância</a>
   </div>`;
 
   /* --------- camadas para quem quer profundidade */
@@ -509,8 +554,175 @@ export function discoveryPage(site, perfumes) {
   return layout({
     site,
     path: "/descobrir/",
-    title: "Descobrir sua fragrância — Vitrine do Sheik",
-    description: "Quatro perguntas, nenhuma técnica. No fim, indicamos por onde começar na perfumaria árabe.",
+    title: "Qual é a sua assinatura? — Vitrine do Sheik",
+    description: "Quatro perguntas sobre você, nenhuma sobre perfume. No fim, dizemos qual é a sua assinatura olfativa e por onde começar.",
+    body,
+  });
+}
+
+/* ------------------------------------------------------------- PRESENTEAR
+   Kits prontos e "monte o seu" na mesma página. Separar as duas coisas
+   repetiria o erro de Fragrâncias vs Descobrir: presentear é a intenção,
+   o kit é só o formato. */
+
+/** Lista de seleção — de propósito uma lista, não cards: os cards editoriais
+    são da vitrine, e o montador precisa ser rápido de ler e de tocar. */
+function picker(perfumes) {
+  const rows = perfumes
+    .map((p) => {
+      const img = list(p.images)[0];
+      const frame = img
+        ? `<img src="${u(`/img/perfumes/${img.base}-320.webp`)}" alt="" width="320" height="427" loading="lazy" decoding="async">`
+        : `<span class="pick-mark-letter">${esc(p.name.trim()[0] || "·")}</span>`;
+      return `<li><button type="button" class="pick" aria-pressed="false"
+          data-pick="${esc(p.slug)}" data-pick-name="${esc(p.name)}">
+        <span class="pick-frame">${frame}</span>
+        <span class="pick-body">
+          <strong>${esc(p.name)}</strong>
+          ${p.brand ? `<em>${esc(p.brand)}</em>` : ""}
+        </span>
+        ${p.price != null ? `<span class="pick-price">${money(p.price)}</span>` : `<span class="pick-price muted">Sob consulta</span>`}
+        <span class="pick-tick" aria-hidden="true"></span>
+      </button></li>`;
+    })
+    .join("");
+  return `<ul class="picker">${rows}</ul>`;
+}
+
+export function giftsPage(site, perfumes, kitsFile) {
+  const { page, builder } = kitsFile;
+  const season = activeSeason(kitsFile.seasons);
+  const all = kitsFile.kits.map((k) => resolveKit(k, perfumes));
+  const seasonKits = season ? all.filter((k) => list(season.kits).includes(k.slug)) : [];
+  const rest = all.filter((k) => !seasonKits.includes(k));
+
+  const body = `
+  <div class="wrap">
+    <section class="section section--tight">
+      <span class="eyebrow reveal">${esc(page.eyebrow)}</span>
+      <h1 class="display reveal gifts-title">${esc(page.title)}</h1>
+      <p class="lede reveal gifts-lede">${esc(page.body)}</p>
+    </section>
+  </div>
+
+  ${season ? `<section class="season season--page reveal">
+    <div class="wrap">
+      <span class="eyebrow">${esc(season.label)}</span>
+      <h2 class="display season-title">${esc(season.title)}</h2>
+      <p class="season-body">${esc(season.body)}</p>
+      ${seasonKits.length ? `<div class="kit-grid">${seasonKits.map((k) => kitCard(k)).join("")}</div>` : ""}
+    </div>
+  </section>` : ""}
+
+  <div class="wrap">
+    <section class="section">
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">${esc(season ? "Fora da estação" : "A seleção")}</span>
+          <h2 class="display">${esc(season ? "O resto dos kits" : page.kitsTitle)}</h2>
+          <p class="rail-note">${esc(page.kitsBody)}</p>
+        </div>
+      </div>
+      <div class="kit-grid">${(season ? rest : all).map((k) => kitCard(k)).join("")}</div>
+    </section>
+
+    <section class="section" id="montar" data-builder
+             data-wa="${waHref(site, "__MSG__")}"
+             data-template="${esc(builder.message)}">
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">${esc(builder.eyebrow)}</span>
+          <h2 class="display">${esc(builder.title)}</h2>
+          <p class="rail-note">${esc(builder.body)}</p>
+        </div>
+      </div>
+      ${picker(perfumes)}
+      <p class="builder-note">${esc(builder.note)}</p>
+      <noscript><p class="builder-note">A seleção precisa de JavaScript. Sem ele, ${btnWhats(waHref(site, "Olá! Quero montar um kit de perfumes."), "fale direto no WhatsApp", "gifts_noscript")} que o consultor monta com você.</p></noscript>
+
+      <div class="quiet-help reveal">
+        <p>${esc(page.help)}</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="kitbar" data-kitbar hidden>
+    <span class="kitbar-count" data-kitbar-count>1 fragrância</span>
+    <button type="button" class="kitbar-clear" data-kitbar-clear>Limpar</button>
+    <a class="btn btn--gold" data-kitbar-go href="#" target="_blank" rel="noopener"
+       data-track="whatsapp_clicked_from_kit" data-track-source="builder">${WHATS_ICON}${esc(builder.cta)}</a>
+  </div>`;
+
+  return layout({
+    site,
+    path: "/presentes/",
+    title: "Presentear — kits de perfumaria árabe | Vitrine do Sheik",
+    description: "Kits prontos de perfumaria árabe ou montados por você. O consultor fecha o valor do conjunto por WhatsApp.",
+    body,
+  });
+}
+
+export function kitPage(site, kit, perfumes, kitsFile) {
+  const names = kit.items.map((p) => p.name);
+  const msg = `Olá! Me interessei pelo kit ${kit.name}${names.length ? ` (${names.join(" + ")})` : ""}. Gostaria de saber mais.`;
+  const others = kitsFile.kits
+    .filter((k) => k.slug !== kit.slug)
+    .map((k) => resolveKit(k, perfumes))
+    .slice(0, 3);
+
+  const body = `
+  <div class="wrap">
+    <a class="back" href="${u('/presentes/')}">&larr; Todos os presentes</a>
+
+    <article class="section section--tight">
+      <span class="eyebrow reveal">${esc(audienceLabel(kit.audience))} · ${kit.items.length} fragrâncias</span>
+      <h1 class="display gifts-title reveal">${esc(kit.name)}</h1>
+      <p class="lede gifts-lede reveal">${esc(kit.concept)}</p>
+
+      <h2 class="block-title kit-pieces-title">O que vem no kit</h2>
+      <div class="kit-pieces">${kit.items.map((p) => card(p, { eager: true })).join("")}</div>
+
+      <div class="kit-detail">
+        <p>${esc(kit.body)}</p>
+      </div>
+
+      <div class="convert reveal">
+        ${kit.total != null
+          ? `<div class="convert-price">${money(kit.total)}<em>${esc(kit.isSum ? kitsFile.priceNote : "no Pix")}</em></div>`
+          : `<div class="convert-price">Sob consulta</div>`}
+        <div class="convert-meta">${esc(names.join(" · "))}</div>
+        ${btnWhats(waHref(site, msg), `Quero o kit ${kit.name}`, "kit_page", kit.slug)}
+        <p class="convert-note">${esc(kitsFile.priceHelp)}</p>
+      </div>
+
+      <div class="quiet-help reveal">
+        <p>Prefere trocar uma das fragrâncias? <a href="${u('/presentes/#montar')}">Monte o kit do seu jeito</a> — o consultor fecha o valor depois.</p>
+      </div>
+    </article>
+  </div>
+
+  ${others.length ? `<section class="section">
+    <div class="wrap">
+      <div class="section-head reveal"><div><span class="eyebrow">Outros presentes</span><h2 class="display">Mais combinações</h2></div></div>
+      <div class="kit-grid">${others.map((k) => kitCard(k)).join("")}</div>
+    </div>
+  </section>` : ""}
+
+  <div class="sticky-cta" data-sticky hidden>
+    <span class="sticky-name">${esc(kit.name)}${kit.total != null ? ` · ${money(kit.total)}` : ""}</span>
+    <a class="btn btn--gold" href="${waHref(site, msg)}" target="_blank" rel="noopener"
+       data-track="whatsapp_clicked_from_kit" data-track-kit="${esc(kit.slug)}" data-track-source="sticky">Quero</a>
+  </div>`;
+
+  return layout({
+    site,
+    path: `/presentes/${kit.slug}/`,
+    title: `Kit ${kit.name} | Vitrine do Sheik`,
+    description: `${kit.concept} ${names.join(" e ")}.`.slice(0, 155),
+    ogImage: (() => {
+      const withPhoto = kit.items.find((p) => list(p.images).length);
+      return withPhoto ? `/img/perfumes/${list(withPhoto.images)[0].base}-960.jpg` : "/img/logo/logo-384.jpg";
+    })(),
     body,
   });
 }

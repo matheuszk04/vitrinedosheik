@@ -1,0 +1,132 @@
+{
+  "//": "KITS E PRESENTES. Os perfumes de cada kit são reais e vêm de perfumes.json — o preço mostrado é a soma dos preços reais no Pix, nunca um número inventado. O que é rascunho meu está listado em 'review' de cada kit: nome, conceito e texto. Corrija à vontade; nada aqui é dado de produto.",
+  "status": "prototipo",
+  "page": {
+    "eyebrow": "Presentear",
+    "title": "Perfume é o presente que a pessoa usa todo dia.",
+    "body": "Aqui o presente vem montado — duas ou três fragrâncias que conversam entre si — ou montado por você, do jeito que fizer sentido para quem vai receber.",
+    "kitsTitle": "Kits prontos",
+    "kitsBody": "Combinações pensadas para funcionar juntas: uma para o dia e outra para a noite, ou dois territórios diferentes da mesma pessoa.",
+    "help": "Não sabe o gosto de quem vai receber? Diga para quem é e o consultor sugere. Embalagem e cartão vão junto, sem custo."
+  },
+  "builder": {
+    "eyebrow": "Do seu jeito",
+    "title": "Monte seu kit",
+    "body": "Escolha as fragrâncias que quiser. No fim, o consultor fecha o valor do conjunto com você.",
+    "cta": "Montar minha seleção",
+    "empty": "Escolha ao menos uma fragrância para montar o kit.",
+    "note": "Nada é cobrado aqui. A seleção vira uma mensagem no WhatsApp e a conversa continua com uma pessoa.",
+    "message": "Olá! Quero montar um kit com: {itens}."
+  },
+  "priceNote": "somando as fragrâncias no Pix",
+  "priceHelp": "O valor final do kit, a embalagem e a forma de pagamento são fechados na conversa.",
+  "seasons": [
+    {
+      "id": "dia-das-maes",
+      "label": "Dia das Mães",
+      "from": "04-20",
+      "to": "05-12",
+      "title": "Um presente que ela vai usar até o fim do vidro.",
+      "body": "Fragrâncias femininas que não erram: doces sem serem infantis, presentes sem serem pesadas.",
+      "kits": ["dois-lados", "primeira-vez"]
+    },
+    {
+      "id": "dia-dos-namorados",
+      "label": "Dia dos Namorados",
+      "from": "05-25",
+      "to": "06-13",
+      "title": "Dois perfumes que se encontram no mesmo ambiente.",
+      "body": "A ideia não é dar o mesmo cheiro para os dois. É escolher duas fragrâncias que combinam quando as pessoas estão perto.",
+      "kits": ["a-dois", "calor-e-sombra"]
+    },
+    {
+      "id": "dia-dos-pais",
+      "label": "Dia dos Pais",
+      "from": "07-20",
+      "to": "08-12",
+      "title": "Para quem usa o mesmo perfume há dez anos.",
+      "body": "Uma fragrância para o dia e outra para a noite. O jeito mais simples de tirar alguém da rotina sem contrariar o gosto dele.",
+      "kits": ["dia-e-noite", "tres-territorios"]
+    },
+    {
+      "id": "natal",
+      "label": "Natal",
+      "from": "11-10",
+      "to": "12-26",
+      "title": "Presente de Natal que não volta para a gaveta.",
+      "body": "Perfumaria árabe é presente fácil de acertar: marcante o bastante para impressionar, versátil o bastante para ser usada.",
+      "kits": ["primeira-vez", "tres-territorios", "a-dois"]
+    },
+    {
+      "id": "ano-novo",
+      "label": "Ano Novo",
+      "from": "12-27",
+      "to": "01-06",
+      "title": "Começar o ano com outro cheiro.",
+      "body": "Trocar de fragrância é a forma mais barata de mudar como você é lembrado.",
+      "kits": ["tres-territorios", "calor-e-sombra"]
+    }
+  ],
+  "kits": [
+    {
+      "slug": "dia-e-noite",
+      "name": "Dia e Noite",
+      "audience": "masculino",
+      "concept": "Um para sair de casa, outro para o que vem depois.",
+      "body": "Mandarin Sky abre cítrico e limpo — funciona no trabalho e no calor. Afnan 9PM entra quando o sol cai: doce, quente e muito mais presente. São dois cheiros distintos que dividem o mesmo fundo adocicado, então a pessoa não sente que trocou de personalidade no meio do dia.",
+      "perfumes": ["mandarin-sky", "afnan-9pm"],
+      "price": null,
+      "review": ["name", "concept", "body"]
+    },
+    {
+      "slug": "dois-lados",
+      "name": "Dois Lados",
+      "audience": "feminino",
+      "concept": "O doce de todo dia e o floral de quando a noite pede.",
+      "body": "Yara Candy é a fragrância que agrada de primeira: frutada, doce, boa para a faculdade e para o trabalho. Club de Nuit Maleka é a outra metade — floral, mais séria, feita para jantar e evento. Juntas cobrem a semana inteira sem repetir.",
+      "perfumes": ["yara-candy", "club-de-nuit-maleka"],
+      "price": null,
+      "review": ["name", "concept", "body"]
+    },
+    {
+      "slug": "primeira-vez",
+      "name": "Primeira Vez",
+      "audience": "unissex",
+      "concept": "Para quem nunca usou perfume árabe e quer entender o que é.",
+      "body": "Al Wesal apresenta o lado especiado e resinoso da perfumaria árabe sem assustar. Khamrah mostra o outro lado, o gourmand — canela, tâmara e baunilha. Depois desses dois, a pessoa já sabe dizer de qual lado ela está.",
+      "perfumes": ["al-wesal", "khamrah"],
+      "price": null,
+      "review": ["name", "concept", "body"]
+    },
+    {
+      "slug": "a-dois",
+      "name": "A Dois",
+      "audience": "casal",
+      "concept": "Duas fragrâncias escolhidas para não brigarem no mesmo ambiente.",
+      "body": "Fakhar Black é seco, aromático e discreto. Eclaire é doce e macia. São opostas que se completam de perto: nenhuma cobre a outra, e as duas continuam distinguíveis quando as pessoas estão lado a lado.",
+      "perfumes": ["fakhar-black", "eclaire"],
+      "price": null,
+      "review": ["name", "concept", "body"]
+    },
+    {
+      "slug": "calor-e-sombra",
+      "name": "Calor e Sombra",
+      "audience": "unissex",
+      "concept": "Duas formas de ocupar um ambiente à noite.",
+      "body": "Asad Elixir é a sombra: especiaria afiada, tabaco e resina. Fakhar Gold é o calor: âmbar e madeira, mais redondo e mais fácil de usar. Para quem já gosta de fragrância marcante e quer duas maneiras diferentes de ser notado.",
+      "perfumes": ["asad-elixir", "fakhar-gold"],
+      "price": null,
+      "review": ["name", "concept", "body"]
+    },
+    {
+      "slug": "tres-territorios",
+      "name": "Três Territórios",
+      "audience": "unissex",
+      "concept": "Três fragrâncias, três direções — para descobrir de qual você gosta.",
+      "body": "Fakhar Platinum pelo lado fresco e aromático. Al Wesal pelo especiado. Fakhar Gold pelo âmbar amadeirado. É o kit de quem ainda não sabe o próprio gosto e prefere descobrir usando, não lendo.",
+      "perfumes": ["fakhar-platinum", "al-wesal", "fakhar-gold"],
+      "price": null,
+      "review": ["name", "concept", "body"]
+    }
+  ]
+}
