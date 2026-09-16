@@ -4,7 +4,20 @@
    quando o site é publicado num subcaminho (GitHub Pages de projeto). */
 let BASE = "";
 export const setBase = (value) => { BASE = value.replace(/\/$/, ""); };
-export const u = (path) => BASE + path;
+
+/* Modo offline: o site roda de uma pasta, aberto com dois cliques, sem
+   servidor. Aí os caminhos precisam ser relativos à página ("../assets/…")
+   e cada rota vira um arquivo de verdade, porque file:// não conhece
+   índice de diretório. */
+let OFFLINE = false;
+export const setOffline = (value) => { OFFLINE = value; };
+
+export const u = (path) => {
+  if (!OFFLINE) return BASE + path;
+  const [, route, tail] = /^([^?#]*)(.*)$/.exec(path);
+  const file = route.endsWith("/") ? route + "index.html" : route;
+  return `${BASE}/${file.replace(/^\//, "")}${tail}`;
+};
 
 export const esc = (s = "") =>
   String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -292,8 +305,8 @@ export function layout({ site, title, description, path, body, jsonLd = null, og
 <link rel="icon" href="${u("/img/logo/logo-96.jpg")}">
 <link rel="apple-touch-icon" href="${u("/img/logo/logo-192.jpg")}">
 
-<link rel="preload" href="${u("/fonts/CormorantGaramond-300-latin.woff2")}" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="${u("/fonts/Inter-300-latin.woff2")}" as="font" type="font/woff2" crossorigin>
+${OFFLINE ? "" : `<link rel="preload" href="${u("/fonts/CormorantGaramond-300-latin.woff2")}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="${u("/fonts/Inter-300-latin.woff2")}" as="font" type="font/woff2" crossorigin>`}
 <link rel="stylesheet" href="${u("/assets/main.css")}">
 <script>document.documentElement.classList.add("js")</script>
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : ""}

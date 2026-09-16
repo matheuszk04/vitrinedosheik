@@ -110,10 +110,21 @@ node src/build.mjs     # gera o site em dist/
 node src/serve.mjs     # abre em http://localhost:4000
 ```
 
+Para mandar o site para alguém que não tem nada instalado, existe o modo
+offline: ele gera a mesma coisa com caminhos relativos e `index.html` em cada
+rota, então a pasta funciona aberta direto do disco, sem servidor.
+
+```bash
+OFFLINE=1 node src/build.mjs   # depois é só clicar duas vezes em dist/index.html
+```
+
+Essa versão não serve para publicar — no ar, use o build normal.
+
 Outros comandos, todos opcionais:
 
 | Comando | Quando usar |
 |---|---|
+| `OFFLINE=1 node src/build.mjs` | gerar uma pasta que abre com dois cliques, sem servidor |
 | `python3 src/optimize-images.py` | trocou ou adicionou fotos |
 | `python3 src/import-catalog.py planilha.xlsx` | atualizou a planilha de estoque |
 | `python3 src/make-enrichment-sheet.py` | quer preencher os dados olfativos |

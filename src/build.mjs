@@ -7,7 +7,7 @@ import { readFile, writeFile, mkdir, rm, cp } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { setBase, setGlossary, setCatalog } from "./templates/base.mjs";
+import { setBase, setOffline, setGlossary, setCatalog } from "./templates/base.mjs";
 import { home, explorer, perfumePage, mapPage, consultantPage, discoveryPage,
          giftsPage, kitPage } from "./templates/pages.mjs";
 import { activeSeason, resolveKit } from "./templates/kits.mjs";
@@ -16,6 +16,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = join(ROOT, "dist");
 
 const readJson = async (p) => JSON.parse(await readFile(join(ROOT, p), "utf8"));
+
+/** "/presentes/a-dois/" -> "../.." — quantos níveis subir até a raiz. */
+function upTo(url) {
+  const depth = url.split("/").filter(Boolean).length;
+  return depth === 0 ? "." : new Array(depth).fill("..").join("/");
+}
 
 async function emit(path, html) {
   const full = join(DIST, path);
@@ -81,8 +87,13 @@ async function build() {
     readJson("content/kits.json"),
   ]);
 
+  /* OFFLINE=1 gera uma pasta que abre com dois cliques, sem servidor: caminhos
+     relativos e .html em vez de rota terminada em barra. */
+  const offline = process.env.OFFLINE === "1";
+  setOffline(offline);
+
   // BASE_PATH permite publicar num subcaminho (ex.: GitHub Pages de projeto)
-  const base = (process.env.BASE_PATH || site.base || "").replace(/\/$/, "");
+  const base = offline ? "." : (process.env.BASE_PATH || site.base || "").replace(/\/$/, "");
   setBase(base);
   setGlossary(site.glossary);
   setCatalog(perfumes);
@@ -91,25 +102,29 @@ async function build() {
   await mkdir(DIST, { recursive: true });
 
   const pages = [
-    ["index.html", home(site, perfumes, kitsFile), "/"],
-    ["fragrancias/index.html", explorer(site, perfumes), "/fragrancias/"],
-    ["presentes/index.html", giftsPage(site, perfumes, kitsFile), "/presentes/"],
-    ["descobrir/index.html", discoveryPage(site, perfumes), "/descobrir/"],
-    ["mapa/index.html", mapPage(site, perfumes), "/mapa/"],
-    ["consultor/index.html", consultantPage(site), "/consultor/"],
+    ["index.html", () => home(site, perfumes, kitsFile), "/"],
+    ["fragrancias/index.html", () => explorer(site, perfumes), "/fragrancias/"],
+    ["presentes/index.html", () => giftsPage(site, perfumes, kitsFile), "/presentes/"],
+    ["descobrir/index.html", () => discoveryPage(site, perfumes), "/descobrir/"],
+    ["mapa/index.html", () => mapPage(site, perfumes), "/mapa/"],
+    ["consultor/index.html", () => consultantPage(site), "/consultor/"],
     ...kitsFile.kits.map((k) => {
       const kit = resolveKit(k, perfumes);
-      return [`presentes/${kit.slug}/index.html`, kitPage(site, kit, perfumes, kitsFile), `/presentes/${kit.slug}/`];
+      return [`presentes/${kit.slug}/index.html`, () => kitPage(site, kit, perfumes, kitsFile), `/presentes/${kit.slug}/`];
     }),
     ...perfumes.map((p) => [
       `perfumes/${p.slug}/index.html`,
-      perfumePage(site, p, perfumes),
+      () => perfumePage(site, p, perfumes),
       `/perfumes/${p.slug}/`,
     ]),
   ];
 
   let bytes = 0;
-  for (const [path, html] of pages) bytes += await emit(path, html);
+  for (const [path, render, url] of pages) {
+    // offline: cada página aponta para a raiz pelo número de níveis que ela tem
+    if (offline) setBase(upTo(url));
+    bytes += await emit(path, render());
+  }
 
   await cp(join(ROOT, "public"), DIST, { recursive: true });
   await mkdir(join(DIST, "assets"), { recursive: true });
@@ -120,11 +135,13 @@ async function build() {
     readFile(join(ROOT, "src/styles/main.css"), "utf8"),
   ]);
   // as url() do @font-face são absolutas: precisam do mesmo prefixo das páginas
-  const css = `${fontsCss}\n${mainCss}`.replace(/url\(\/fonts\//g, `url(${base}/fonts/`);
+  const css = `${fontsCss}\n${mainCss}`.replace(/url\(\/fonts\//g, `url(${offline ? ".." : base}/fonts/`);
   await writeFile(join(DIST, "assets/main.css"), css);
   await cp(join(ROOT, "src/scripts/app.js"), join(DIST, "assets/app.js"));
 
-  if (site.noindex) {
+  if (offline) {
+    // pasta local não é indexada por ninguém
+  } else if (site.noindex) {
     // site no ar, mas fora das buscas: ninguém chega sem o link
     await emit("robots.txt", "User-agent: *\nDisallow: /\n");
   } else {
@@ -137,6 +154,10 @@ async function build() {
   }
 
   console.log(`✓ ${pages.length} páginas geradas (${(bytes / 1024).toFixed(0)} KB de HTML)`);
+  if (offline) {
+    console.log("  modo offline: abra dist/index.html direto no navegador");
+    return;
+  }
   pages.forEach(([, , url]) => console.log(`  ${url}`));
   if (!site.url) {
     console.log("\n⚠ content/site.json: campo 'url' vazio — defina o domínio final para");
