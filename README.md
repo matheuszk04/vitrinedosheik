@@ -102,12 +102,22 @@ dist/             o site gerado (não versionado)
 
 O site atende dois visitantes diferentes pela mesma porta:
 
-- **Explorar** (`/fragrancias/`) — para quem já sabe o que quer. Coleção completa,
-  filtros por gênero, família, ocasião, perfil e clima. A navegação também aceita
-  `/fragrancias/?g=masculino` para entrar direto numa categoria.
-- **Descobrir** (`/descobrir/`) — para quem não sabe. Quatro perguntas, nenhuma
-  técnica, e até três indicações no fim. "Ainda não sei" é resposta válida em
-  qualquer pergunta e não prejudica o resultado.
+- **Ver as fragrâncias** (`/fragrancias/`) — para quem já sabe o que quer. Filtros
+  primários de gênero e ocasião à vista; família, estilo e clima recolhidos em
+  "Mais filtros". A navegação aceita `/fragrancias/?g=masculino` para campanhas
+  que apontam direto para uma categoria.
+- **Não sei por onde começar** (`/descobrir/`) — quatro perguntas, nenhuma técnica,
+  e até três indicações no fim. O resultado explica a escolha com as próprias
+  respostas da pessoa. "Ainda não sei" é resposta válida e não prejudica nada.
+
+As duas páginas foram deliberadamente separadas: filtrar por *estilo* e responder
+"o que você quer transmitir" são a mesma pergunta, e ter as duas abertas lado a
+lado fazia as páginas parecerem redundantes. Por isso as dimensões subjetivas
+ficam recolhidas em Fragrâncias e pertencem ao quiz.
+
+O **mapa olfativo** continua em `/mapa/`, mas saiu da navegação principal: é uma
+experiência de exploração, não um caminho de compra. Ele é alcançado a partir de
+Fragrâncias.
 
 A busca abre pelo ícone de lupa em qualquer página (ou pela tecla `/` no
 computador). Ela tolera erro de digitação: "kamrah" encontra Khamrah.

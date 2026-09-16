@@ -493,6 +493,21 @@
         (p.tagline ? "<em>" + p.tagline + "</em>" : "") + price + "</span></a>";
     }
 
+    /* A justificativa sai das respostas, não do jargão: "Você disse que quer
+       transmitir algo sedutor, pretende usar à noite e gosta de sensação quente." */
+    function recapSentence() {
+      var parts = [];
+      answers.forEach(function (ans, i) {
+        if (!ans || !data.questions[i].recap) return;
+        parts.push(data.questions[i].recap.replace("{a}", ans.label.toLowerCase()));
+      });
+      if (!parts.length) return "Você preferiu não responder, então começamos pelo mais versátil da coleção.";
+      var text = parts.length === 1
+        ? parts[0]
+        : parts.slice(0, -1).join(", ") + " e " + parts[parts.length - 1];
+      return copy.because.replace("{recap}", text);
+    }
+
     function finish() {
       var ranked = data.perfumes
         .map(function (p) { return { p: p, s: scoreOf(p) }; })
@@ -510,7 +525,7 @@
         box.innerHTML =
           '<span class="eyebrow">' + copy.eyebrow + "</span>" +
           '<h2 class="display step-title">' + chosen.name + "</h2>" +
-          '<p class="lede">Porque combina com o perfil que você descreveu.</p>' +
+          '<p class="lede">' + recapSentence() + "</p>" +
           cardFor(chosen, true) +
           (rest.length
             ? '<h3 class="rec-other">' + copy.otherTitle + "</h3>" +

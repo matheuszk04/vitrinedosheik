@@ -475,40 +475,47 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
 .search-price { font-family: var(--serif); font-size: 15px; color: var(--gold-warm); flex: none; }
 .search-empty { padding: 22px 6px; color: var(--text-dim); font-size: 14px; }
 
-/* --------------------------------------------------------------------------
-   DOIS CAMINHOS
-   -------------------------------------------------------------------------- */
-.paths-head { margin-bottom: 30px; }
-.paths-head h2 { margin-top: 14px; font-size: clamp(25px, 4vw, 34px); }
-.paths-grid { display: grid; gap: 16px; }
-@media (min-width: 720px) { .paths-grid { grid-template-columns: 1fr 1fr; } }
+.entrance-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px 26px;
+  margin-top: 32px;
+}
 
-.path {
-  display: block;
-  padding: 30px 26px;
-  border: 1px solid var(--line);
-  transition: border-color 0.3s, background 0.3s, transform 0.3s var(--ease);
-}
-.path:hover {
-  border-color: var(--gold-line);
-  background: rgba(201, 164, 92, 0.04);
-  transform: translateY(-3px);
-}
-.path--alt { background: linear-gradient(180deg, rgba(201, 164, 92, 0.06), transparent 70%); }
-.path-label {
-  font-family: var(--serif);
-  font-size: 27px;
-  color: var(--gold-warm);
-  display: block;
-}
-.path p { margin: 12px 0 20px; font-size: 14px; line-height: 1.7; color: var(--text-soft); }
-.path-cta {
+/* --------------------------------------------------------------------------
+   FILTROS AVANÇADOS E AJUDA DISCRETA
+   -------------------------------------------------------------------------- */
+.filters-more { border-bottom: 1px solid var(--line); }
+.filters-more > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 15px 0;
   font-size: 10px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--text-dim);
+  transition: color 0.2s;
 }
-.path:hover .path-cta { color: var(--gold-warm); }
+.filters-more > summary::-webkit-details-marker { display: none; }
+.filters-more > summary::after { content: " +"; color: var(--gold-deep); }
+.filters-more[open] > summary::after { content: " –"; }
+.filters-more > summary:hover { color: var(--gold-warm); }
+.filters-more .filter-row:last-child { border-bottom: none; }
+
+.quiet-help {
+  margin-top: 54px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--text-soft);
+}
+.quiet-help p { margin: 0 0 6px; }
+.quiet-help a { color: var(--gold-warm); border-bottom: 1px solid var(--gold-line); }
+.quiet-help a:hover { border-bottom-color: var(--gold); }
+.quiet-help .muted { font-size: 12.5px; }
 
 /* --------------------------------------------------------------------------
    FLUXO DE DESCOBERTA
@@ -670,28 +677,28 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
 /* --------------------------------------------------------------------------
    ENTRADA — primeira tela, quase vazia de propósito
    -------------------------------------------------------------------------- */
+/* Entrada deliberadamente curta: quem vem de anúncio precisa ver perfume,
+   não uma tela inteira de marca antes de rolar. */
 .entrance {
   position: relative;
-  min-height: 92vh;
-  min-height: 92svh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   text-align: center;
-  padding: 90px 22px;
+  padding: 54px 22px 20px;
 }
+@media (min-width: 760px) { .entrance { padding: 76px 22px 28px; } }
 
 .entrance-mark {
-  width: 96px;
-  height: 96px;
+  width: 78px;
+  height: 78px;
   border-radius: 50%;
-  margin-bottom: 40px;
+  margin-bottom: 26px;
 }
 
 .entrance-line {
-  max-width: 17ch;
-  font-size: clamp(34px, 8vw, 62px);
+  max-width: 19ch;
+  font-size: clamp(30px, 6.4vw, 50px);
   line-height: 1.12;
   color: var(--text);
 }
@@ -701,33 +708,14 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
 }
 
 .entrance-support {
-  max-width: 44ch;
-  margin: 26px 0 0;
+  max-width: 46ch;
+  margin: 18px 0 0;
   font-size: 14.5px;
   line-height: 1.8;
   color: var(--text-dim);
 }
 
-.entrance-cta { margin-top: 44px; }
 
-.scroll-hint {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 9.5px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-.scroll-hint::after {
-  content: "";
-  display: block;
-  width: 1px;
-  height: 34px;
-  margin: 12px auto 0;
-  background: linear-gradient(var(--gold-deep), transparent);
-}
 
 /* --------------------------------------------------------------------------
    BLOCO EDITORIAL
@@ -1313,7 +1301,7 @@ body.drawer-open .drawer-scrim { opacity: 1; pointer-events: auto; }
 /* --------------------------------------------------------------------------
    EXPLORADOR — filtros
    -------------------------------------------------------------------------- */
-.filters { margin-bottom: 40px; }
+.filters { margin: 34px 0 40px; }
 .filter-row {
   display: flex;
   align-items: baseline;

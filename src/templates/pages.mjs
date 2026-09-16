@@ -22,40 +22,37 @@ const btnWhats = (href, label, source, perfume = "") =>
 
 /* ------------------------------------------------------------------ HOME */
 export function home(site, perfumes) {
-  const { entrance, universe, closing } = site.home;
-  // a home mostra só o que está pronto para ser lido por inteiro
-  const featured = perfumes.filter(isEnriched).slice(0, 3);
+  const { entrance, universe, collection, closing } = site.home;
   const stages = site.pyramidExplainer.stages;
+
+  /* Quem tem foto vem primeiro: é a foto que vende na primeira tela. */
+  const featured = [...perfumes]
+    .sort((a, b) => list(b.images).length - list(a.images).length)
+    .slice(0, 6);
 
   const body = `
   <section class="entrance">
     <img class="entrance-mark" src="${u('/img/logo/logo-192.webp')}" width="192" height="192" alt="" fetchpriority="high">
-    <h1 class="display entrance-line">Algumas fragrâncias entram em uma sala.<br><em>Outras permanecem nela.</em></h1>
+    <h1 class="display entrance-line">${esc(entrance.line)}</h1>
     <p class="entrance-support">${esc(entrance.support)}</p>
-    <a class="btn btn--ghost entrance-cta" href="${u('/fragrancias/')}">${esc(entrance.cta)}</a>
-    <span class="scroll-hint">Role</span>
+    <div class="entrance-actions">
+      <a class="btn btn--gold" href="${u('/fragrancias/')}"
+         data-track="path_chosen" data-track-path="explore">${esc(entrance.cta)}</a>
+      <a class="btn btn--quiet" href="${u('/descobrir/')}"
+         data-track="path_chosen" data-track-path="discover">${esc(entrance.ctaAlt)}</a>
+    </div>
   </section>
 
   <section class="section section--tight">
     <div class="wrap">
-      <div class="paths reveal">
-        <div class="paths-head">
-          <span class="eyebrow">${esc(site.paths.eyebrow)}</span>
-          <h2 class="display">${esc(site.paths.title)}</h2>
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">${esc(collection.eyebrow)}</span>
+          <h2 class="display">${esc(collection.title)}</h2>
         </div>
-        <div class="paths-grid">
-          <a class="path" href="${u('/fragrancias/')}" data-track="path_chosen" data-track-path="explore">
-            <span class="path-label">${esc(site.paths.explore.label)}</span>
-            <p>${esc(site.paths.explore.body)}</p>
-            <span class="path-cta">${esc(site.paths.explore.cta)} &rarr;</span>
-          </a>
-          <a class="path path--alt" href="${u('/descobrir/')}" data-track="path_chosen" data-track-path="discover">
-            <span class="path-label">${esc(site.paths.discover.label)}</span>
-            <p>${esc(site.paths.discover.body)}</p>
-            <span class="path-cta">${esc(site.paths.discover.cta)} &rarr;</span>
-          </a>
-        </div>
+        <a class="btn btn--quiet" href="${u('/fragrancias/')}">${esc(collection.all.replace("{n}", perfumes.length))}</a>
       </div>
+      <div class="grid">${featured.map((p, i) => card(p, { eager: i < 2 })).join("")}</div>
     </div>
   </section>
 
@@ -64,31 +61,7 @@ export function home(site, perfumes) {
       <div class="editorial reveal">
         <span class="eyebrow">${esc(universe.eyebrow)}</span>
         <h2 class="display">${esc(universe.title)}</h2>
-        ${universe.body.map((p) => `<p>${esc(p)}</p>`).join("")}
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <div>
-          <span class="eyebrow">A curadoria</span>
-          <h2 class="display">${featured.length} fragrâncias, explicadas por inteiro</h2>
-        </div>
-        <a class="btn btn--quiet" href="${u('/fragrancias/')}">Ver as ${perfumes.length}</a>
-      </div>
-      <div class="grid">${featured.map((p, i) => card(p, { eager: i === 0 })).join("")}</div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <div class="editorial reveal">
-        <span class="eyebrow">Mapa olfativo</span>
-        <h2 class="display">Toda fragrância ocupa um lugar.</h2>
-        <p>Entre o fresco e o intenso, entre o seco e o doce, cada perfume tem uma coordenada. Ver onde eles caem é a forma mais rápida de entender do que você gosta — e do que não gosta.</p>
-        <a class="btn btn--ghost" href="${u('/mapa/')}">Abrir o mapa</a>
+        ${universe.body.map((t) => `<p>${esc(t)}</p>`).join("")}
       </div>
     </div>
   </section>
@@ -140,36 +113,53 @@ export function home(site, perfumes) {
   });
 }
 
-/* ------------------------------------------------------------- EXPLORADOR */
-const FILTER_GROUPS = [
-  { key: "gender", legend: "Gênero", from: (p) => (p.gender ? [p.gender] : []) },
+/* ------------------------------------------------------------- EXPLORADOR
+   Gênero e uso ficam à vista; o resto fica recolhido. Perfil, família e clima
+   são as mesmas dimensões que o quiz pergunta — deixá-las abertas aqui fazia
+   as duas páginas parecerem a mesma coisa. */
+const PRIMARY_FILTERS = [
+  { key: "gender", legend: "Para quem", from: (p) => (p.gender ? [p.gender] : []),
+    labels: { masculino: "Masculinos", feminino: "Femininos", unissex: "Unissex" }, allLabel: "Todas" },
+  { key: "occasions", legend: "Para quê", from: (p) => list(p.occasions), allLabel: "Tanto faz" },
+];
+
+const ADVANCED_FILTERS = [
   { key: "families", legend: "Família", from: (p) => list(p.families) },
-  { key: "occasions", legend: "Ocasião", from: (p) => list(p.occasions) },
-  { key: "personality", legend: "Perfil", from: (p) => list(p.personality) },
+  { key: "personality", legend: "Estilo", from: (p) => list(p.personality) },
   { key: "climates", legend: "Clima", from: (p) => list(p.climates) },
 ];
 
+function filterRow(group, perfumes) {
+  const values = [...new Set(perfumes.flatMap(group.from))].sort((a, b) => a.localeCompare(b, "pt-BR"));
+  if (values.length < 2) return "";
+  const label = (v) => (group.labels && group.labels[v]) || v[0].toUpperCase() + v.slice(1);
+  return `<div class="filter-row">
+    <span class="filter-legend">${esc(group.legend)}</span>
+    <div class="filter-opts">
+      <button class="filter-btn is-on" data-filter="${group.key}" data-value="">${esc(group.allLabel || "Todos")}</button>
+      ${values.map((v) => `<button class="filter-btn" data-filter="${group.key}" data-value="${esc(v)}">${esc(label(v))}</button>`).join("")}
+    </div>
+  </div>`;
+}
+
 export function explorer(site, perfumes) {
-  const rows = FILTER_GROUPS.map((group) => {
-    const values = [...new Set(perfumes.flatMap(group.from))].sort();
-    if (values.length < 2) return "";
-    return `<div class="filter-row">
-      <span class="filter-legend">${esc(group.legend)}</span>
-      <div class="filter-opts">
-        <button class="filter-btn is-on" data-filter="${group.key}" data-value="">Todos</button>
-        ${values.map((v) => `<button class="filter-btn" data-filter="${group.key}" data-value="${esc(v)}">${esc(v[0].toUpperCase() + v.slice(1))}</button>`).join("")}
-      </div>
-    </div>`;
-  }).join("");
+  const primary = PRIMARY_FILTERS.map((g) => filterRow(g, perfumes)).join("");
+  const advanced = ADVANCED_FILTERS.map((g) => filterRow(g, perfumes)).join("");
+  const semFoto = perfumes.filter((p) => !list(p.images).length).length;
 
   const body = `
   <div class="wrap">
     <section class="section section--tight">
-      <span class="eyebrow reveal">A vitrine</span>
-      <h1 class="display reveal" style="font-size:clamp(32px,6vw,52px);margin:16px 0 18px">Fragrâncias</h1>
-      <p class="lede reveal" style="max-width:52ch">Poucas, escolhidas uma a uma. Cada uma com o que ela é — e com o que ela não é.</p>
+      <span class="eyebrow reveal">${esc(site.home.collection.eyebrow)}</span>
+      <h1 class="display reveal" style="font-size:clamp(32px,6vw,52px);margin:16px 0 0">Fragrâncias</h1>
 
-      <div class="filters reveal" role="group" aria-label="Filtrar fragrâncias">${rows}</div>
+      <div class="filters reveal" role="group" aria-label="Filtrar fragrâncias">
+        ${primary}
+        ${advanced ? `<details class="filters-more">
+          <summary>Mais filtros</summary>
+          ${advanced}
+        </details>` : ""}
+      </div>
 
       <h2 class="sr-only">Resultados</h2>
       <div class="result-line">
@@ -180,8 +170,14 @@ export function explorer(site, perfumes) {
       <div class="grid" data-grid>${perfumes.map((p, i) => card(p, { eager: i < 2 })).join("")}</div>
 
       <div class="no-result" data-empty hidden>
-        <p>Nenhuma fragrância da curadoria atual combina com essa seleção.</p>
-        ${btnWhats(waHref(site, "Olá! Procuro algo específico e não encontrei no site. Pode me ajudar?"), "Dizer o que procuro", "explorer_empty")}
+        <p>Nenhuma fragrância da coleção atual combina com essa seleção.</p>
+        ${btnWhats(waHref(site, "Olá! Procuro uma fragrância específica e não encontrei no site. Pode me ajudar?"), "Dizer o que procuro", "explorer_empty")}
+      </div>
+
+      <div class="quiet-help reveal">
+        <p>Não sabe qual escolher? <a href="${u('/descobrir/')}" data-track="path_chosen" data-track-path="discover_from_collection">Responda quatro perguntas</a> e indicamos por onde começar.</p>
+        <p class="muted">Prefere explorar pelo cheiro? <a href="${u('/mapa/')}">Veja o mapa olfativo</a>.</p>
+        ${semFoto ? `<p class="muted">${semFoto} fragrâncias ainda estão sem foto no site. O consultor manda fotos reais por mensagem.</p>` : ""}
       </div>
     </section>
   </div>`;
@@ -190,7 +186,7 @@ export function explorer(site, perfumes) {
     site,
     path: "/fragrancias/",
     title: "Fragrâncias — Vitrine do Sheik",
-    description: "A curadoria completa da Vitrine do Sheik, com perfil olfativo, ocasião e clima de cada fragrância.",
+    description: "A coleção completa da Vitrine do Sheik: perfumaria árabe masculina, feminina e unissex, com preço e atendimento por WhatsApp.",
     body,
   });
 }
@@ -248,18 +244,23 @@ export function perfumePage(site, perfume, all) {
     perfume.concentration && ["Concentração", perfume.concentration],
   ].filter(Boolean);
 
+  const verdict = (perfume.recommendedFor || perfume.notFor) ? `<div class="verdict">
+      ${perfume.recommendedFor ? `<div class="verdict-box"><h3>Você provavelmente vai gostar se</h3><p>${esc(perfume.recommendedFor)}</p></div>` : ""}
+      ${perfume.notFor ? `<div class="verdict-box verdict-box--warn"><h3>Pode não ser para você se</h3><p>${esc(perfume.notFor)}</p></div>` : ""}
+    </div>` : "";
+
   const decision = `
     ${traits.length ? `<div class="personality">${traits.map((t) => `<span class="chip chip--solid">${esc(t)}</span>`).join("")}</div>` : ""}
-    ${perfume.recommendedFor ? `<p class="quick-for"><b>Para quem é.</b> ${esc(perfume.recommendedFor)}</p>` : ""}
     ${quickFacts.length ? `<dl class="quick-facts">${quickFacts
       .map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`)
       .join("")}</dl>` : ""}
-    ${perfume.profile ? `<div class="block"><h2 class="block-title">Perfil ${term("projecao")}</h2>${meters(perfume.profile)}</div>` : ""}`;
+    ${perfume.profile ? `<div class="block"><h2 class="block-title">Perfil ${term("projecao")}</h2>${meters(perfume.profile)}</div>` : ""}
+    ${verdict}`;
 
   /* --------- caixa de conversão, agora acima da dobra longa */
   const convert = `<div class="convert">
     ${perfume.price != null
-      ? `<div class="convert-price">${money(perfume.price)}<em>no pix</em></div>
+      ? `<div class="convert-price">${money(perfume.price)}<em>no Pix</em></div>
          ${perfume.priceCard ? `<div class="convert-alt">ou ${money(perfume.priceCard)} no cartão</div>` : ""}`
       : `<div class="convert-price">Sob consulta</div>`}
     <div class="convert-meta">${[perfume.brand, perfume.volumeMl ? `${perfume.volumeMl} ml` : null, inStock(perfume) ? null : "Sob encomenda"]
@@ -283,10 +284,6 @@ export function perfumePage(site, perfume, all) {
         .map((t) => `<span class="chip">${esc(t)}</span>`).join("")}</div></div>`,
     `<div class="block"><h2 class="block-title">Como usar</h2><ul class="usage">${site.usageDefaults
       .map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`,
-    (perfume.recommendedFor || perfume.notFor) && `<div class="verdict">
-      ${perfume.recommendedFor ? `<div class="verdict-box"><h3>Você vai gostar se</h3><p>${esc(perfume.recommendedFor)}</p></div>` : ""}
-      ${perfume.notFor ? `<div class="verdict-box verdict-box--warn"><h3>Talvez não seja para você</h3><p>${esc(perfume.notFor)}</p></div>` : ""}
-    </div>`,
   ].filter(Boolean).join("");
 
   const related = relatedTo(perfume, all);
@@ -489,7 +486,7 @@ export function discoveryPage(site, perfumes) {
       <div class="step" data-step="intro">
         <span class="eyebrow">${esc(d.intro.eyebrow)}</span>
         <h1 class="display step-title step-title--intro">${esc(d.intro.title)}</h1>
-        <p class="lede">${esc(d.intro.body)}</p>
+        <p class="step-help">${esc(d.intro.body)}</p>
         <div class="step-actions">
           <button type="button" class="btn btn--gold" data-start>${esc(d.intro.cta)}</button>
           <a class="btn btn--quiet" href="${u('/fragrancias/')}">${esc(d.intro.skip)}</a>
