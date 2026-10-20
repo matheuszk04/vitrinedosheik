@@ -12,6 +12,7 @@ import {
   getBestSellers,
   getCategoriesWithProducts,
   getCategoryBySlug,
+  getCategoryImage,
   getCategoryProducts,
   getCollectionBySlug,
   getCollectionProducts,
@@ -102,7 +103,7 @@ export function CategoriesPage() {
             <li key={c.id}>
               <Link to={`/categorias/${c.slug}`} className="group block">
                 <span className="block aspect-[4/3] overflow-hidden rounded-md bg-cream">
-                  <ProductImage src={c.image} alt="" className="transition-transform duration-700 ease-soft group-hover:scale-[1.03]" />
+                  <ProductImage src={getCategoryImage(c)} alt="" className="transition-transform duration-700 ease-soft group-hover:scale-[1.03]" />
                 </span>
                 <span className="mt-4 flex items-baseline justify-between gap-3">
                   <span className="font-serif text-2xl text-ink">{c.name}</span>

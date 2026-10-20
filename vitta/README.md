@@ -4,8 +4,8 @@ Protótipo funcional de e-commerce de decoração minimalista: catálogo com bus
 página de produto, carrinho persistente no navegador e checkout **simulado**.
 Roda localmente, sem back-end e sem serviços externos.
 
-> Todos os produtos, preços e contatos atuais são **ilustrativos**. Nenhuma compra,
-> cobrança ou pedido real acontece. Veja [Limitações](#limitações).
+> O catálogo tem os 20 produtos importados do Wix, **ainda sem fotos**. O checkout é
+> simulado: nenhuma compra, cobrança ou pedido real acontece. Veja [Limitações](#limitações).
 
 ## Executar
 
@@ -61,6 +61,7 @@ vitta/
 ├── brand-src/                 logos originais + script de preparo
 ├── docs/EDITAR-CATALOGO.md    guia de edição do catálogo
 ├── e2e/                       testes Playwright
+├── scripts/                   importador do catálogo do Wix + CSV original
 ├── public/
 │   ├── brand/                 logo oficial (horizontal, símbolo, favicons)
 │   └── images/                products/ categories/ collections/
@@ -101,7 +102,8 @@ vitta/
 
 ## Limitações
 
-- Catálogo, preços, estoque, medidas e imagens são de **demonstração** (ilustrações SVG locais).
+- Fotos dos produtos ainda não importadas (veja `docs/EDITAR-CATALOGO.md`). Não há medidas,
+  cores, datas de cadastro nem ranking de vendas no CSV; coleções ainda não foram cadastradas.
 - Checkout **simulado**: sem pagamento, sem frete, sem pedido, sem e-mail. A referência
   exibida (`DEMO-XXXXXX`) é fictícia.
 - O carrinho fica no `localStorage` **deste navegador**: não é seguro, não sincroniza entre
@@ -112,8 +114,7 @@ vitta/
 
 ## Próximos passos para uma loja real
 
-1. Substituir os dados e as ilustrações de demonstração por produtos e fotos reais, e mudar
-   `demoMode` para `false`.
+1. Importar as fotos dos produtos e completar medidas e materiais.
 2. Preencher contatos, redes sociais e as políticas de entrega e trocas.
 3. Levar o catálogo para um CMS ou banco de dados com painel administrativo e expor uma API.
 4. Criar pedidos e estoque no servidor; integrar um gateway de pagamento (Pix e cartão) e o cálculo de frete.

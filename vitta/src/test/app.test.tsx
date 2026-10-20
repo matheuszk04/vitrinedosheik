@@ -1,9 +1,14 @@
 import { act, cleanup, screen, within } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { allProducts, getBestSellers, getFeatured, getProductBySlug } from '../lib/catalog'
 import { matchesSearch } from '../lib/filters'
 import { CART_STORAGE_KEY } from '../state/cart-storage'
 import { renderApp } from './render-app'
+
+// Os testes de interface usam um catálogo fixo (src/test/fixtures), independente do catálogo real.
+vi.mock('../data/products', () => import('./fixtures/products'))
+vi.mock('../data/categories', () => import('./fixtures/categories'))
+vi.mock('../data/collections', () => import('./fixtures/collections'))
 
 const cartLink = () => screen.getByRole('link', { name: /^Carrinho,/ })
 

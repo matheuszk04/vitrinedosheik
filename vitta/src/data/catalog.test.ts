@@ -16,11 +16,16 @@ describe('catálogo cadastrado', () => {
     expect(errors.map((e) => e.message)).toEqual([])
   })
 
-  it('tem dados suficientes para demonstrar todas as funcionalidades', () => {
-    expect(products.length).toBeGreaterThan(8)
-    expect(products.some((p) => p.images.length === 0)).toBe(true)
-    expect(products.some((p) => p.stockStatus === 'out_of_stock')).toBe(true)
-    expect(products.some((p) => p.compareAtPrice && p.compareAtPrice > p.price)).toBe(true)
+  it('descrições não citam outra loja nem trazem HTML', () => {
+    for (const p of products) {
+      expect(p.description, p.name).not.toMatch(/versaone|dropshipping|<\/?[a-z]/i)
+    }
+  })
+
+  it('todas as categorias cadastradas têm produtos', () => {
+    for (const c of categories) {
+      expect(products.some((p) => p.categoryId === c.id), c.name).toBe(true)
+    }
   })
 })
 

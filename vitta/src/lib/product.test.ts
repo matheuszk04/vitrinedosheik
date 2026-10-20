@@ -1,8 +1,12 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import type { Product } from '../types/product'
 import { describeDimensions, discountPercent, getProductMedia, isOnSale, isPurchasable } from './product'
 import { formatDate, formatPrice } from './format'
 import { getBestSellers, getNewArrivals, getRelatedProducts, getProductBySlug } from './catalog'
+
+vi.mock('../data/products', () => import('../test/fixtures/products'))
+vi.mock('../data/categories', () => import('../test/fixtures/categories'))
+vi.mock('../data/collections', () => import('../test/fixtures/collections'))
 
 const product: Product = {
   id: 't',

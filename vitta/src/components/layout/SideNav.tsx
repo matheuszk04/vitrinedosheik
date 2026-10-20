@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router'
-import { allCollections, getCategoriesWithProducts } from '../../lib/catalog'
+import { allCollections, getBestSellers, getCategoriesWithProducts, getNewArrivals } from '../../lib/catalog'
 import { cx } from '../../lib/cx'
 import { Drawer } from '../ui/Drawer'
 import { Icon } from '../ui/Icon'
@@ -56,11 +56,16 @@ function Group({ label, children, defaultOpen }: { label: string; children: Reac
 /** Menu lateral: links fixos + categorias e coleções lidas do catálogo. */
 export function SideNav({ open, onClose }: SideNavProps) {
   const categories = getCategoriesWithProducts()
+  // Links para listas vazias ficam ocultos até haver dados (datas de cadastro, ranking de vendas, coleções).
+  const links = primary.filter(
+    (item) =>
+      (item.to !== '/novidades' || getNewArrivals(1).length > 0) && (item.to !== '/mais-vendidos' || getBestSellers().length > 0),
+  )
   return (
     <Drawer open={open} onClose={onClose} title="Menu" hideTitle header={<Logo className="h-6 w-auto" />}>
       <nav id="menu-lateral" aria-label="Menu principal" className="px-4 py-5 text-[0.9375rem]">
         <ul className="space-y-0.5">
-          {primary.map((item) => (
+          {links.map((item) => (
             <li key={item.to}>
               <NavLink to={item.to} end={item.end} className={linkClass} onClick={onClose}>
                 {item.label}
@@ -81,6 +86,7 @@ export function SideNav({ open, onClose }: SideNavProps) {
               </NavLink>
             </li>
           </Group>
+          {allCollections.length > 0 && (
           <Group label="Coleções">
             {allCollections.map((c) => (
               <li key={c.id}>
@@ -95,6 +101,7 @@ export function SideNav({ open, onClose }: SideNavProps) {
               </NavLink>
             </li>
           </Group>
+          )}
         </ul>
         <hr className="my-5 border-line" />
         <ul className="space-y-0.5">

@@ -2,55 +2,36 @@ import type { Category } from '../types/catalog'
 
 /**
  * Categorias da loja. Para adicionar uma, copie um bloco, troque `id`,
- * `slug`, `name` e a imagem. Veja docs/EDITAR-CATALOGO.md.
+ * `slug` e `name`. Sem `image`, o atalho usa a primeira foto de um produto
+ * da categoria. Veja docs/EDITAR-CATALOGO.md.
  */
 export const categories: Category[] = [
-  {
-    id: 'vasos-e-ceramicas',
-    slug: 'vasos-e-ceramicas',
-    name: 'Vasos e cerâmicas',
-    description: 'Peças de forma simples, para flores, ramos secos ou para ficarem sozinhas.',
-    image: '/images/categories/vasos-e-ceramicas.svg',
-    order: 1,
-  },
   {
     id: 'iluminacao',
     slug: 'iluminacao',
     name: 'Iluminação',
-    description: 'Luminárias e pendentes de luz suave, para ambientes acolhedores.',
-    image: '/images/categories/iluminacao.svg',
+    description: 'Luminárias e lanternas para uma luz acolhedora.',
+    order: 1,
+  },
+  {
+    id: 'vasos-e-plantas',
+    slug: 'vasos-e-plantas',
+    name: 'Vasos e plantas',
+    description: 'Vasos, terrários e peças para trazer o verde para dentro de casa.',
     order: 2,
   },
   {
-    id: 'texteis',
-    slug: 'texteis',
-    name: 'Têxteis',
-    description: 'Almofadas e mantas em fibras naturais e tons neutros.',
-    image: '/images/categories/texteis.svg',
+    id: 'esculturas',
+    slug: 'esculturas',
+    name: 'Esculturas',
+    description: 'Estátuas e esculturas para estantes, aparadores e mesas.',
     order: 3,
   },
   {
     id: 'objetos-decorativos',
     slug: 'objetos-decorativos',
     name: 'Objetos decorativos',
-    description: 'Esculturas, velas e pequenos objetos que completam a composição.',
-    image: '/images/categories/objetos-decorativos.svg',
+    description: 'Relógios, pêndulos, globos e outros objetos que completam o ambiente.',
     order: 4,
-  },
-  {
-    id: 'mesa-posta',
-    slug: 'mesa-posta',
-    name: 'Mesa posta',
-    description: 'Pratos, jarras e bandejas para receber com calma.',
-    image: '/images/categories/mesa-posta.svg',
-    order: 5,
-  },
-  {
-    id: 'espelhos-e-quadros',
-    slug: 'espelhos-e-quadros',
-    name: 'Espelhos e quadros',
-    description: 'Peças de parede que ampliam e dão ritmo ao ambiente.',
-    image: '/images/categories/espelhos-e-quadros.svg',
-    order: 6,
   },
 ]

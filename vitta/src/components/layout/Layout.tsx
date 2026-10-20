@@ -27,7 +27,7 @@ export function Layout() {
       </a>
       {storeConfig.demoMode && (
         <p className="bg-cocoa px-4 py-2 text-center text-xs tracking-[0.02em] text-ivory/90">
-          Protótipo VITTA — produtos, preços e informações são ilustrativos. Nenhuma compra é realizada.
+          Protótipo VITTA — o checkout é uma simulação. Nenhuma compra é realizada.
         </p>
       )}
       <Header menuOpen={menuOpen} onMenuToggle={() => setMenuOpen((v) => !v)} />

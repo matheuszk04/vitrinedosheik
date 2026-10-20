@@ -4,8 +4,9 @@ Este guia explica como cadastrar e alterar produtos, categorias, coleções e im
 **sem mexer nos componentes visuais**. Todo o conteúdo da loja vive em poucos arquivos
 de dados; a interface lê tudo a partir deles.
 
-> **Estado atual:** os 17 produtos cadastrados são **dados de demonstração** (`isDemo: true`).
-> Nomes, preços, medidas e imagens são ilustrativos. Substitua-os pelos produtos reais.
+> **Estado atual:** o catálogo tem os 20 produtos importados da exportação do Wix
+> (`scripts/catalogo-wix.csv`), **ainda sem fotos** — a loja mostra "Imagem em breve".
+> Veja [Importar do Wix e baixar as fotos](#importar-do-wix-e-baixar-as-fotos).
 
 ---
 
@@ -27,6 +28,33 @@ bloco entre `{` e `}`, com campos no formato `campo: valor,`. Textos ficam entre
 simples (`'assim'`), números ficam sem aspas (`189.9`).
 
 ---
+
+## Importar do Wix e baixar as fotos
+
+O arquivo `src/data/products.ts` foi gerado pelo script `scripts/import-wix-catalog.py` a
+partir do CSV exportado do Wix. O script:
+
+- limpa o HTML das descrições e remove frases que citavam outra loja;
+- usa nome, descrição, preço, preço riscado e disponibilidade do CSV; não inventa medidas,
+  cores ou datas;
+- define a categoria e os destaques de cada produto pelas tabelas `CATEGORIAS` e `DESTAQUES`
+  no início do script (o CSV não traz categorias);
+- converte as fotos para WebP e as salva em `public/images/products/<slug>-<n>.webp`.
+
+Rodar de novo **substitui** `src/data/products.ts`. Se você editou produtos à mão, refaça as
+edições ou passe a editar só à mão.
+
+```bash
+cd vitta
+# fotos direto do Wix (precisa de internet com acesso a static.wixstatic.com)
+python3 scripts/import-wix-catalog.py scripts/catalogo-wix.csv --baixar-fotos
+
+# ou: fotos já baixadas numa pasta (o nome de cada arquivo precisa conter o código da
+# coluna "media" do CSV, ex.: 22be8c_832e9e3ab86645cba8e5a15ae857de3f~mv2.png)
+python3 scripts/import-wix-catalog.py scripts/catalogo-wix.csv --pasta-fotos ~/Downloads/fotos-vitta
+```
+
+Mídias do CSV sem extensão (6 no total) são vídeos do Wix e são ignoradas.
 
 ## 1. Cadastrar um novo produto
 
@@ -134,6 +162,7 @@ Em `src/data/categories.ts`, copie um bloco e ajuste:
 ```
 
 - `order` define a posição no menu e na página inicial (menor primeiro).
+- `image` é opcional: sem ela, o atalho usa a primeira foto de um produto da categoria.
 - Depois, use `categoryId: 'tapetes'` nos produtos dessa categoria.
 - Uma categoria **sem produtos** não aparece no menu nem nos atalhos (evita páginas vazias).
 - Antes de apagar uma categoria, mova os produtos dela para outra.
@@ -161,7 +190,6 @@ Em `src/data/collections.ts`, cada coleção lista os produtos pelo `id`, na ord
    `'/images/products/vaso-garrafa-areia-1.jpg'`.
 3. Para substituir uma foto, você pode sobrescrever o arquivo com o **mesmo nome** (nada
    mais precisa mudar) ou salvar um novo arquivo e atualizar o caminho no cadastro.
-4. Apague as ilustrações de demonstração (`*.svg`) quando não forem mais usadas.
 
 **Recomendações**
 
@@ -208,10 +236,12 @@ virariam duas opções diferentes). Um filtro só aparece quando há pelo menos 
 ## 8. Destacar produtos
 
 - `featured: true` → seção **Em destaque** da página inicial (os 4 primeiros) e topo de "Todos os produtos".
-  O primeiro destaque também ilustra a abertura da página inicial.
+  O primeiro destaque com foto também ilustra a abertura da página inicial.
 - `bestSellerRank: 1` → seção **Mais vendidos** (em ordem crescente). Use apenas com dados reais.
+  Enquanto nenhum produto tiver esse campo, a seção e o link do menu ficam ocultos.
 - `createdAt: '2026-11-02'` → **Lançamentos/Novidades** mostram os mais recentes primeiro.
   A quantidade na página inicial é definida em `newArrivalsLimit` (`store-config.ts`).
+  O CSV do Wix não traz datas: enquanto nenhum produto tiver `createdAt`, a seção fica oculta.
 
 ## 9. Mídia 3D (para o futuro)
 

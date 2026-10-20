@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { footerNavigation, storeConfig } from '../../config/store-config'
+import { allCollections } from '../../lib/catalog'
 import { Logo } from '../ui/Logo'
 
 function Column({ title, children }: { title: string; children: React.ReactNode }) {
@@ -25,7 +26,7 @@ export function Footer() {
 
         <Column title="A VITTA">
           <ul className="space-y-2.5 text-sm">
-            {footerNavigation.institutional.map((l) => (
+            {footerNavigation.institutional.filter((l) => l.to !== '/colecoes' || allCollections.length > 0).map((l) => (
               <li key={l.to}>
                 <Link to={l.to} className="text-ink hover:underline hover:underline-offset-4">
                   {l.label}
@@ -74,7 +75,7 @@ export function Footer() {
       <div className="border-t border-line">
         <div className="container-site flex flex-col gap-2 py-6 text-xs text-stone sm:flex-row sm:justify-between">
           <p>© {new Date().getFullYear()} {storeConfig.name}. Todos os direitos reservados.</p>
-          {storeConfig.demoMode && <p>Protótipo de demonstração — produtos, preços e contatos ilustrativos.</p>}
+          {storeConfig.demoMode && <p>Protótipo — checkout simulado; contatos e políticas provisórios.</p>}
         </div>
       </div>
     </footer>

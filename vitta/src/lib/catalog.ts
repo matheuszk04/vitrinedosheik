@@ -48,6 +48,11 @@ export function getCategoryProducts(categoryId: string, products: readonly Produ
   return products.filter((p) => p.categoryId === categoryId)
 }
 
+/** Imagem do atalho da categoria; sem imagem própria, usa a primeira foto de um produto dela. */
+export function getCategoryImage(category: Category): string | undefined {
+  return category.image ?? allProducts.find((p) => p.categoryId === category.id && p.images[0])?.images[0]
+}
+
 /** Categorias que têm ao menos um produto. */
 export function getCategoriesWithProducts(products: readonly Product[] = allProducts): Category[] {
   const used = new Set(products.map((p) => p.categoryId))
