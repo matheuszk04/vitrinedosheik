@@ -1,5 +1,8 @@
 # Vitrine do Sheik
 
+> **VITTA:** a pasta [`vitta/`](vitta/README.md) contém um projeto separado — o protótipo da loja
+> de decoração VITTA (React + Vite). Ele não afeta este site nem o seu deploy.
+
 Portfólio digital de perfumaria árabe. Site estático, sem framework e sem dependências —
 gerado a partir de arquivos JSON.
 
